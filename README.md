@@ -1,2 +1,2 @@
 # ProjetSyntheseArchi
-Projet sur D&amp;N pour architecure logiciel 
+Projet sur D&D pour architecure logiciel 

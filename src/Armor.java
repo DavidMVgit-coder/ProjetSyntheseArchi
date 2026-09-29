@@ -7,8 +7,8 @@ public class Armor implements Equipment {
     private final int protection;
 
     public Armor(Name name, ArmorType armorType, int protection) {
-        this.name = Objects.requireNonNull(name, "The armor's name is required.");
-        this.armorType = Objects.requireNonNull(armorType, "The armor type is required.");
+        this.name = Objects.requireNonNull(name, "Le nom de l'armure est requise");
+        this.armorType = Objects.requireNonNull(armorType, "Le type d'armure est requis");
         if (protection < 0) {
             throw new InvalidProtectionException(protection);
         }

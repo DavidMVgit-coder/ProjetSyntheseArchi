@@ -8,8 +8,8 @@ public class HeroEquipment {
     private Armor equippedArmor;
 
     public HeroEquipment(HeroClass heroClass, Inventory inventory) {
-        this.heroClass = Objects.requireNonNull(heroClass, "The hero's class is required.");
-        this.inventory = Objects.requireNonNull(inventory, "The inventory is required.");
+        this.heroClass = Objects.requireNonNull(heroClass, "La classe du hero est requise.");
+        this.inventory = Objects.requireNonNull(inventory, "L'inventaire est requis");
     }
 
 

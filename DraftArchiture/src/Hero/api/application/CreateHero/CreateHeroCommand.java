@@ -1,7 +1,7 @@
 package Hero.api.application.CreateHero;
 
-public record CreateHeroCommande(
-        String nom,
+public record CreateHeroCommand(
+        String name,
         int force,
         int dexterite,
         int constitution,

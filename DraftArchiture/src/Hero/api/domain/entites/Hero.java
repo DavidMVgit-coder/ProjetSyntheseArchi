@@ -1,33 +1,33 @@
 package Hero.api.domain.entites;
 import java.util.UUID;
-import Hero.api.domain.valeur_object.Caracteristique;
+import Hero.api.domain.value_object.Characteristics;
 import java.util.regex.Pattern;
 import Hero.api.domain.exception.InvalidHeroNameException;
 
 public class Hero {
     private UUID heroId;
-    private  String nom;
-    private Caracteristique force;
-    private Caracteristique dexterite;
-    private Caracteristique constitution;
-    private Caracteristique intelligence;
-    private Caracteristique sagesse;
-    private Caracteristique charisme;
-    public  Hero( String nom,
-                  Caracteristique force,
-                 Caracteristique dexterite,
-                 Caracteristique constitution,
-                 Caracteristique intelligence,
-                 Caracteristique sagesse,
-                 Caracteristique charisme
+    private  String name;
+    private Characteristics force;
+    private Characteristics dexterite;
+    private Characteristics constitution;
+    private Characteristics intelligence;
+    private Characteristics sagesse;
+    private Characteristics charisme;
+    public  Hero( String name,
+                  Characteristics force,
+                  Characteristics dexterite,
+                  Characteristics constitution,
+                  Characteristics intelligence,
+                  Characteristics sagesse,
+                  Characteristics charisme
 
                   ){
 
-        if (!valideNom(nom)){
+        if (!validName(name)){
             throw new InvalidHeroNameException();
         }
         this.heroId = UUID.randomUUID();
-        this.nom = nom;
+        this.name = name;
         this.force = force ;
         this.dexterite = dexterite;
         this.constitution = constitution;
@@ -36,26 +36,26 @@ public class Hero {
         this.charisme = charisme;
     }
 
-    public boolean valideNom(String nom){
-       Pattern VERIFIER = Pattern.compile("[\\p{L} '\\-]+");
+    public boolean validName(String name){
+       Pattern VERIFY = Pattern.compile("[\\p{L} '\\-]+");
 
-        if (nom == null  || nom.isBlank()){
+        if (name == null  || name.isBlank()){
             return false;
         }
-        if (nom.length() < 2 || nom.length() > 30){
+        if (name.length() < 2 || name.length() > 30){
             return false;
         }
-        if (nom.charAt(0) == ' ' || nom.charAt(nom.length() - 1) == ' ') {
+        if (name.charAt(0) == ' ' || name.charAt(name.length() - 1) == ' ') {
             return false;
         }
-        return VERIFIER.matcher(nom).matches() ;
+        return VERIFY.matcher(name).matches() ;
     }
 
     public UUID getHeroId() {
         return heroId;
     }
 
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 }

@@ -2,6 +2,6 @@ package Hero.api.application.port;
 import Hero.api.domain.entites.Hero;
 
 public interface HeroRepository {
-    void sauvegader(Hero hero);
-    boolean verifierNom(String nom);
+    void save(Hero hero);
+    boolean verifyName(String name);
 }

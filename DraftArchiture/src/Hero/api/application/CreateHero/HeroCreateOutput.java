@@ -2,20 +2,20 @@ package Hero.api.application.CreateHero;
 
 import java.util.UUID;
 
-public class HeroCreationOutput{
+public class HeroCreateOutput{
    private final UUID heroId;
-   private final String nom;
-   public HeroCreationOutput(UUID heroId, String nom){
+   private final String name;
+   public HeroCreateOutput(UUID heroId, String name){
        this.heroId = heroId;
-       this.nom = nom;
+       this.name = name;
    }
 
     public UUID getHeroId() {
         return heroId;
     }
 
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 }
 

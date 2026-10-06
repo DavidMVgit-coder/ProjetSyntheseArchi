@@ -1,13 +1,13 @@
 package Hero.api.domain.exception;
 
 public class HeroExistException extends RuntimeException {
-    private final String nom;
-    public  HeroExistException(String nom){
-        super("L'héro : "+ nom + " existe déjà");
-        this.nom =  nom;
+    private final String name;
+    public  HeroExistException(String name){
+        super("L'héro : "+ name + " existe déjà");
+        this.name=  name;
     }
 
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 }

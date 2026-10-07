@@ -5,19 +5,17 @@ import java.util.Set;
 
 // TODO: mettre le bon nom de classe pour HeroClass
 final class ArmorCompatibilityRules {
-    private static final Map<HeroClass, Set<ArmorType>> ALLOWED = new EnumMap<>(HeroClass.class);
+    private  final Map<HeroClass, Set<ArmorType>> allowed = new EnumMap<>(HeroClass.class);
 
-    static {
-        ALLOWED.put(HeroClass.WARRIOR, EnumSet.of(ArmorType.LIGHT, ArmorType.HEAVY));
-        ALLOWED.put(HeroClass.CLERIC, EnumSet.of(ArmorType.LIGHT, ArmorType.HEAVY));
-        ALLOWED.put(HeroClass.RANGER, EnumSet.of(ArmorType.LIGHT));
-        ALLOWED.put(HeroClass.MAGE, EnumSet.of(ArmorType.NONE));
+    ArmorCompatibilityRules() {
+        allowed.put(HeroClass.WARRIOR, EnumSet.of(ArmorType.LIGHT, ArmorType.HEAVY));
+        allowed.put(HeroClass.CLERIC, EnumSet.of(ArmorType.LIGHT, ArmorType.HEAVY));
+        allowed.put(HeroClass.RANGER, EnumSet.of(ArmorType.LIGHT));
+        allowed.put(HeroClass.MAGE, EnumSet.of(ArmorType.NONE));
     }
 
-    private ArmorCompatibilityRules() {
-    }
 
-    static boolean isAllowed(HeroClass heroClass, ArmorType type) {
-        return ALLOWED.getOrDefault(heroClass, Set.of()).contains(type);
+     boolean isAllowed(HeroClass heroClass, ArmorType type) {
+        return allowed.getOrDefault(heroClass, Set.of()).contains(type);
     }
 }

@@ -1,9 +1,9 @@
 import java.util.Objects;
 
-public final class Name {
+public final class ArmorName {
     private final String label;
 
-    public Name(String label) {
+    public ArmorName(String label) {
         if (label == null || label.isBlank()) {
             throw new InvalidNameException();
         }
@@ -17,8 +17,8 @@ public final class Name {
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        if (!(other instanceof Name)) return false;
-        return label.equals(((Name) other).label);
+        if (!(other instanceof ArmorName)) return false;
+        return label.equals(((ArmorName) other).label);
     }
 
     @Override

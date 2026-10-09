@@ -1,3 +1,3 @@
 public interface InventoryItem {
-    Name getName();
+    ArmorName getName();
 }

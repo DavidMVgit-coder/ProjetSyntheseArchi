@@ -2,12 +2,12 @@ import java.util.Objects;
 
 public class Armor implements Equipment {
     // TODO: surement changer le nom des variables
-    private final Name name;
+    private final ArmorName armorName;
     private final ArmorType armorType;
     private final int protection;
 
-    public Armor(Name name, ArmorType armorType, int protection) {
-        this.name = Objects.requireNonNull(name, "Le nom de l'armure est requise");
+    public Armor(ArmorName armorName, ArmorType armorType, int protection) {
+        this.armorName = Objects.requireNonNull(armorName, "Le nom de l'armure est requise");
         this.armorType = Objects.requireNonNull(armorType, "Le type d'armure est requis");
         if (protection < 0) {
             throw new InvalidProtectionException(protection);
@@ -24,8 +24,8 @@ public class Armor implements Equipment {
     }
 
     @Override
-    public Name getName() {
-        return name;
+    public ArmorName getName() {
+        return armorName;
     }
 
     @Override

@@ -1,5 +1,5 @@
 public class InvalidNameException extends RuntimeException {
     public InvalidNameException() {
-        super("Le nom ne peut pas etre vide.");
+        super("Le domain.nom ne peut pas etre vide.");
     }
 }

@@ -1,50 +1,54 @@
-package vie;
+package domain.vie;
 
-public final class PointsDeVie {
+public final class HealthPoints {
 
     private int maximum;
-    private int actuels;
+    private int current;
 
-    public PointsDeVie(int maximum) {
+    public HealthPoints(int maximum) {
         if (maximum < 1) {
             throw new IllegalArgumentException("Le maximum de PV doit être d'au moins 1.");
         }
+
         this.maximum = maximum;
-        this.actuels = maximum;
+        this.current = maximum;
     }
 
-    public void subirDegats(int degats) {
-        if (degats < 0) {
+    public void takeDamage(int damage) {
+        if (damage < 0) {
             throw new IllegalArgumentException("Les dégâts ne peuvent pas être négatifs.");
         }
-        actuels = Math.max(0, actuels - degats);
+
+        current = Math.max(0, current - damage);
     }
 
-    public void soigner(int montant) {
-        if (montant < 0) {
+    public void heal(int amount) {
+        if (amount < 0) {
             throw new IllegalArgumentException("Le soin ne peut pas être négatif.");
         }
-        actuels = Math.min(maximum, actuels + montant);
+
+        current = Math.min(maximum, current + amount);
     }
 
-    public void augmenterMaximum(int gain) {
+    public void increaseMaximum(int gain) {
         if (gain < 0) {
             throw new IllegalArgumentException("Le gain de PV ne peut pas être négatif.");
         }
+
         maximum += gain;
-        actuels += gain;
+        current += gain;
     }
 
-    public void restaurerCompletement() {
-        actuels = maximum;
+    public void restoreFully() {
+        current = maximum;
     }
 
-    public boolean estHorsCombat() {
-        return actuels == 0;
+    public boolean isUnconscious() {
+        return current == 0;
     }
 
-    public int getActuels() {
-        return actuels;
+    public int getCurrent() {
+        return current;
     }
 
     public int getMaximum() {
@@ -53,6 +57,6 @@ public final class PointsDeVie {
 
     @Override
     public String toString() {
-        return actuels + "/" + maximum + " PV";
+        return current + "/" + maximum + " HP";
     }
 }

@@ -1,9 +1,11 @@
+import domain.classe.HeroClass;
+
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
-// TODO: mettre le bon nom de classe pour HeroClass
+// TODO: mettre le bon domain.nom de domain.classe pour HeroClass
 final class ArmorCompatibilityRules {
     private  final Map<HeroClass, Set<ArmorType>> allowed = new EnumMap<>(HeroClass.class);
 

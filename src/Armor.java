@@ -1,13 +1,15 @@
+import domain.classe.HeroClass;
+
 import java.util.Objects;
 
 public class Armor implements Equipment {
-    // TODO: surement changer le nom des variables
+    // TODO: surement changer le domain.nom des variables
     private final ArmorName armorName;
     private final ArmorType armorType;
     private final int protection;
 
     public Armor(ArmorName armorName, ArmorType armorType, int protection) {
-        this.armorName = Objects.requireNonNull(armorName, "Le nom de l'armure est requise");
+        this.armorName = Objects.requireNonNull(armorName, "Le domain.nom de l'armure est requise");
         this.armorType = Objects.requireNonNull(armorType, "Le type d'armure est requis");
         if (protection < 0) {
             throw new InvalidProtectionException(protection);

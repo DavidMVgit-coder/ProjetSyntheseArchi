@@ -1,6 +1,8 @@
+import domain.classe.HeroClass;
+
 import java.util.Objects;
 import java.util.Optional;
-// TODO: Mettre le bon nom pour HeroClass.
+// TODO: Mettre le bon domain.nom pour HeroClass.
 public class HeroEquipment {
     private final HeroClass heroClass;
     private final Inventory inventory;
@@ -8,7 +10,7 @@ public class HeroEquipment {
     private Armor equippedArmor;
 
     public HeroEquipment(HeroClass heroClass, Inventory inventory) {
-        this.heroClass = Objects.requireNonNull(heroClass, "La classe du hero est requise.");
+        this.heroClass = Objects.requireNonNull(heroClass, "La domain.classe du hero est requise.");
         this.inventory = Objects.requireNonNull(inventory, "L'inventaire est requis");
     }
 

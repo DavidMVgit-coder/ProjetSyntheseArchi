@@ -1,8 +1,8 @@
-import domain.classe.HeroClass;
-
 import java.util.Objects;
 import java.util.Optional;
-// TODO: Mettre le bon domain.nom pour HeroClass.
+import Weapon.Item;
+import Weapon.Weapon;
+// TODO: Mettre le bon nom pour HeroClass.
 public class HeroEquipment {
     private final HeroClass heroClass;
     private final Inventory inventory;
@@ -10,7 +10,7 @@ public class HeroEquipment {
     private Armor equippedArmor;
 
     public HeroEquipment(HeroClass heroClass, Inventory inventory) {
-        this.heroClass = Objects.requireNonNull(heroClass, "La domain.classe du hero est requise.");
+        this.heroClass = Objects.requireNonNull(heroClass, "La classe du hero est requise.");
         this.inventory = Objects.requireNonNull(inventory, "L'inventaire est requis");
     }
 
@@ -27,13 +27,13 @@ public class HeroEquipment {
         this.equippedArmor = armor;
     }
 
-    private void validatePossession(Equipment equipment) {
+    private void validatePossession(Item equipment) {
         if (!inventory.contains(equipment)) {
             throw new ItemNotOwnedException(equipment);
         }
     }
 
-    private void validateClassRestriction(Equipment equipment) {
+    private void validateClassRestriction(Item equipment) {
         if (!equipment.canBeEquippedBy(this.heroClass)) {
             throw new InvalidEquipmentForClassException(equipment, this.heroClass);
         }

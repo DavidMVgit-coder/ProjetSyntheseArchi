@@ -1,5 +1,7 @@
 import java.util.Objects;
 import java.util.Optional;
+import Weapon.Item;
+import Weapon.Weapon;
 // TODO: Mettre le bon nom pour HeroClass.
 public class HeroEquipment {
     private final HeroClass heroClass;
@@ -25,13 +27,13 @@ public class HeroEquipment {
         this.equippedArmor = armor;
     }
 
-    private void validatePossession(Equipment equipment) {
+    private void validatePossession(Item equipment) {
         if (!inventory.contains(equipment)) {
             throw new ItemNotOwnedException(equipment);
         }
     }
 
-    private void validateClassRestriction(Equipment equipment) {
+    private void validateClassRestriction(Item equipment) {
         if (!equipment.canBeEquippedBy(this.heroClass)) {
             throw new InvalidEquipmentForClassException(equipment, this.heroClass);
         }

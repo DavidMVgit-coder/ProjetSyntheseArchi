@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class Armor implements Equipment {
+public class Armor implements InventoryItem {
     // TODO: surement changer le nom des variables
     private final ArmorName armorName;
     private final ArmorType armorType;

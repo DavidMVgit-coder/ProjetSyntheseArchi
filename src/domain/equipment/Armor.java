@@ -1,7 +1,11 @@
+package domain.equipment;
+
+import domain.classe.HeroClass;
+import domain.exception.InvalidProtectionException;
+
 import java.util.Objects;
 
-public class Armor implements InventoryItem {
-    // TODO: surement changer le nom des variables
+public class Armor implements Equipement {
     private final ArmorName armorName;
     private final ArmorType armorType;
     private final int protection;
@@ -23,13 +27,16 @@ public class Armor implements InventoryItem {
         return armorType;
     }
 
-    @Override
     public ArmorName getName() {
         return armorName;
     }
 
     @Override
-    // TODO: set the correct class name
+    public String getDisplayName() {
+        return armorName.value();
+    }
+
+    @Override
     public boolean canBeEquippedBy(HeroClass heroClass) {
         return ArmorCompatibilityRules.isAllowed(heroClass, armorType);
     }

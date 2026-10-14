@@ -1,3 +1,7 @@
+package domain.equipment;
+
+import domain.exception.InvalidNameException;
+
 import java.util.Objects;
 
 public final class ArmorName {

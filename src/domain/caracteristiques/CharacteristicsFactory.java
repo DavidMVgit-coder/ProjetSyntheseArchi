@@ -1,6 +1,7 @@
 package domain.caracteristiques;
 
-import domain.exception.MissingValueCharacteristic;
+import domain.exception.InvalidCharacteristicException;
+import domain.exception.MissingCharacteristicValueException;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -30,13 +31,11 @@ public final class CharacteristicsFactory {
                                         Characteristic characteristic) {
         Integer value = baseValues.get(characteristic);
         if (value == null) {
-            throw new MissingValueCharacteristic( characteristic);
+            throw new MissingCharacteristicValueException(characteristic);
         }
 
         if (value < Characteristic.MIN_CREATION_VALUE || value > Characteristic.MAX_CREATION_VALUE) {
-            throw new IllegalArgumentException(
-                    characteristic + " doit être compris entre " + Characteristic.MIN_CREATION_VALUE
-                            + " et " + Characteristic.MAX_CREATION_VALUE + ".");
+            throw new InvalidCharacteristicException(characteristic, value);
         }
 
         return value;

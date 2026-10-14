@@ -1,15 +1,13 @@
 package application.CreateHero;
 
-import domain.caracteristiques.Characteristic;
-import domain.caracteristiques.Species;
-import domain.classe.HeroClass;
-import domain.nom.HeroName;
-
-import java.util.Map;
-
 public record CreateHeroCommand(
-        HeroName name,
-        Species species,
-        HeroClass heroClass,
-        Map<Characteristic, Integer> baseValues) {
+        String name,
+        String species,
+        String heroClass,
+        int strength,
+        int dexterity,
+        int constitution,
+        int intelligence,
+        int wisdom,
+        int charisma) {
 }

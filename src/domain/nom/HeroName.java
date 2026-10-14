@@ -1,6 +1,7 @@
 package domain.nom;
 
 import java.util.Objects;
+import domain.exception.InvalidHeroNameException;
 
 public final class HeroName {
 
@@ -11,17 +12,17 @@ public final class HeroName {
 
     public HeroName(String value) {
         if (value == null) {
-            throw new IllegalArgumentException("Le domain.nom du héros est obligatoire.");
+            throw new InvalidHeroNameException("Le nom du héros est obligatoire.");
         }
 
         if (value.length() < MIN_LENGTH || value.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException(
-                    "Le domain.nom doit contenir entre " + MIN_LENGTH + " et " + MAX_LENGTH + " caractères.");
+            throw new InvalidHeroNameException(
+                    "Le nom doit contenir entre " + MIN_LENGTH + " et " + MAX_LENGTH + " caractères.");
         }
 
         if (!isValidFormat(value)) {
-            throw new IllegalArgumentException(
-                    "Le domain.nom ne peut contenir que des lettres et des espaces, sans espace au début ou à la fin.");
+            throw new InvalidHeroNameException(
+                    "Le nom ne peut contenir que des lettres et des espaces, sans espace au début ou à la fin.");
         }
 
         this.value = value;

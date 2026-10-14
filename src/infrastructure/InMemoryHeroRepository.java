@@ -6,6 +6,8 @@ import domain.nom.HeroName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class InMemoryHeroRepository implements HeroRepository {
 
@@ -26,5 +28,11 @@ public class InMemoryHeroRepository implements HeroRepository {
 
         return false;
     }
-}
 
+    @Override
+    public Optional<Hero> fetchById(UUID heroId) {
+        return heroes.stream()
+                .filter(hero -> hero.getHeroId().equals(heroId))
+                .findFirst();
+    }
+}

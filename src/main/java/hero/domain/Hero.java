@@ -1,11 +1,10 @@
 package hero.domain;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class Hero {
 
-    private final UUID heroId;
+    private final HeroId heroId;
     private final HeroName name;
     private final Species species;
     private final HeroClass heroClass;
@@ -15,10 +14,10 @@ public class Hero {
     private final Progression progression;
 
 
-    public Hero(HeroName name, Species species, HeroClass heroClass, CharacteristicSet characteristics,
+    public Hero(HeroId heroId, HeroName name, Species species, HeroClass heroClass, CharacteristicSet characteristics,
                 HealthPoints healthPoints, ManaPoints manaPoints, Progression progression)
     {
-        this.heroId = UUID.randomUUID();
+        this.heroId = Objects.requireNonNull(heroId);
         this.name = Objects.requireNonNull(name);
         this.species = Objects.requireNonNull(species);
         this.heroClass = Objects.requireNonNull(heroClass);
@@ -73,7 +72,7 @@ public class Hero {
     }
 
 
-    public UUID getHeroId() {
+    public HeroId getHeroId() {
         return heroId;
     }
 
@@ -111,4 +110,3 @@ public class Hero {
                 + healthPoints + ", " + manaPoints;
     }
 }
-

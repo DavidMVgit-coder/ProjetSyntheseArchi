@@ -21,7 +21,7 @@ public final class HeroFactory {
         ManaPoints manaPoints = new ManaPoints(heroClass.getMaxManaLevel1());
         Progression progression = new Progression();
 
-        return new Hero(name, species, heroClass, characteristics, healthPoints, manaPoints, progression);
+        return new Hero(HeroId.generate(), name, species, heroClass, characteristics, healthPoints, manaPoints, progression);
     }
 
     private static int calculateMaxHpLevel1(HeroClass heroClass, CharacteristicSet characteristics) {

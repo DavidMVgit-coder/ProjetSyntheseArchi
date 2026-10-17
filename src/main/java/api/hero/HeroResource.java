@@ -3,17 +3,20 @@ package api.hero;
 import application.CreateHero.CreateHeroUseCase;
 import application.CreateHero.HeroOutput;
 import application.GetHero.GetHeroUseCase;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
-@RestController
-@RequestMapping("/heroes")
+@Path("/heroes")
+@Produces(MediaType.APPLICATION_JSON)
 public class HeroResource {
 
     private final CreateHeroUseCase createHeroUseCase;
@@ -21,6 +24,7 @@ public class HeroResource {
     private final CreateHeroRequestMapper requestMapper;
     private final HeroResponseMapper responseMapper;
 
+    @Inject
     public HeroResource(CreateHeroUseCase createHeroUseCase, GetHeroUseCase getHeroUseCase) {
         this.createHeroUseCase = createHeroUseCase;
         this.getHeroUseCase = getHeroUseCase;
@@ -28,19 +32,21 @@ public class HeroResource {
         this.responseMapper = new HeroResponseMapper();
     }
 
-    @PostMapping
-    public ResponseEntity<HeroResponse> create(@RequestBody(required = false) CreateHeroRequest request) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response create(CreateHeroRequest request, @Context UriInfo uriInfo) {
         HeroOutput output = createHeroUseCase.execute(requestMapper.toCommand(request));
         HeroResponse response = responseMapper.toResponse(output);
-        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequestUri()
+        return Response.created(uriInfo.getAbsolutePathBuilder()
                 .path("/{id}")
-                .buildAndExpand(response.id())
-                .toUri())
-                .body(response);
+                .build(response.id()))
+                .entity(response)
+                .build();
     }
 
-    @GetMapping("/{id}")
-    public HeroResponse getById(@PathVariable String id) {
+    @GET
+    @Path("/{id}")
+    public HeroResponse getById(@PathParam("id") String id) {
         return responseMapper.toResponse(getHeroUseCase.execute(id));
     }
 }

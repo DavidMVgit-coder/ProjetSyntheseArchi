@@ -8,11 +8,13 @@ Cette API REST, développée en Java avec **Jersey (JAX-RS)**, utilise un stocka
 
 Elle permet de créer un héros avec `POST /heroes`, puis de le consulter avec `GET /heroes/{id}`.
 
+Le projet cible Java 21. Utiliser un JDK 21 pour compiler et lancer l'API avec Maven.
+
 Lors de la création d'un héros, l'API retourne le statut HTTP `201 Created`, ainsi que l'identifiant du héros dans le corps de la réponse et son URL dans l'en-tête `Location`.
 
 ## Prérequis
 
-- Java (version compatible avec le projet)
+- JDK 21
 - Maven
 - Jersey (JAX-RS)
 

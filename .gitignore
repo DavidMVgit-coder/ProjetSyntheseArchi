@@ -1,6 +1,9 @@
 # ==========================
 # Fichiers Java et Build
 # ==========================
+# Maven
+/target/
+
 # Compiled class file
 *.class
 

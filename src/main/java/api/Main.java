@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
-public class ProjetSyntheseArchiApplication {
+public class Main {
 
     public static HttpServer startServer(URI baseUri) throws IOException {
         HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, new ApiConfiguration(), false);

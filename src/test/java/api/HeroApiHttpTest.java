@@ -34,10 +34,9 @@ class HeroApiHttpTest {
 
     @BeforeAll
     static void startApi() throws Exception {
-        server = ProjetSyntheseArchiApplication.startServer(URI.create("http://127.0.0.1:0/"));
+        server = Main.startServer(URI.create("http://127.0.0.1:0/"));
         int port = server.getListeners().iterator().next().getPort();
         baseUri = URI.create("http://127.0.0.1:" + port + "/");
-        // Le serveur Grizzly est configuré pour HTTP/1.1, sans négociation HTTP/2.
         client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .connectTimeout(Duration.ofSeconds(5))

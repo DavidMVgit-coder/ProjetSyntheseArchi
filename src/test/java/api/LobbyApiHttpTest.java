@@ -25,6 +25,9 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -32,6 +35,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LobbyApiHttpTest {
 
+    private static final int EXPECTED_LOBBY_CAPACITY = 4;
+    private static final int EXPECTED_INITIAL_MEMBER_COUNT = 1;
+    private static final int EXPECTED_INITIAL_AVAILABLE_SLOTS = 3;
+    private static final int HOST_MEMBER_INDEX = 0;
+    private static final Duration CONNECTION_TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(5);
+    private static final URI SERVER_BIND_URI = URI.create("http://127.0.0.1:0/");
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final UUID ALICE = UUID.fromString("8feadfd3-8280-4d70-8770-fc28c6641c22");
     private static final UUID BOB = UUID.fromString("a8bf2f4e-7551-4fb4-bddf-0ee2d921d101");
@@ -44,12 +54,12 @@ class LobbyApiHttpTest {
     void startApi() throws Exception {
         ApiConfiguration configuration = new ApiConfiguration();
         configuration.register(new TestAuthenticationFilter());
-        server = GrizzlyHttpServerFactory.createHttpServer(URI.create("http://127.0.0.1:0/"), configuration);
+        server = GrizzlyHttpServerFactory.createHttpServer(SERVER_BIND_URI, configuration);
         int port = server.getListeners().iterator().next().getPort();
         lobbiesUri = URI.create("http://127.0.0.1:" + port + "/lobbies");
         client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
-                .connectTimeout(Duration.ofSeconds(5))
+                .connectTimeout(CONNECTION_TIMEOUT)
                 .build();
     }
 
@@ -65,9 +75,9 @@ class LobbyApiHttpTest {
 
     @Test
     void rejectsUnauthenticatedRequestsWithoutCreatingALobby() throws Exception {
-        assertError(post(null), 401, "AUTHENTICATION_REQUIRED");
+        assertError(post(null), HTTP_UNAUTHORIZED, "AUTHENTICATION_REQUIRED");
 
-        assertEquals(201, post("alice").statusCode());
+        assertEquals(HTTP_CREATED, post("alice").statusCode());
     }
 
     @Test
@@ -77,41 +87,41 @@ class LobbyApiHttpTest {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("{\"playerId\":\"" + ALICE + "\"}")));
 
-        assertError(response, 401, "AUTHENTICATION_REQUIRED");
+        assertError(response, HTTP_UNAUTHORIZED, "AUTHENTICATION_REQUIRED");
     }
 
     @Test
     void rejectsUnrecognizedCredentials() throws Exception {
-        assertError(post("unknown"), 401, "AUTHENTICATION_REQUIRED");
+        assertError(post("unknown"), HTTP_UNAUTHORIZED, "AUTHENTICATION_REQUIRED");
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"invalid-identity", "abbreviated-identity", "blank-identity"})
     void rejectsUnusableAuthenticatedIdentities(String token) throws Exception {
-        assertError(post(token), 401, "AUTHENTICATION_REQUIRED");
+        assertError(post(token), HTTP_UNAUTHORIZED, "AUTHENTICATION_REQUIRED");
     }
 
     @Test
     void createsAnOpenLobbyForTheAuthenticatedPlayer() throws Exception {
         HttpResponse<String> response = post("alice");
 
-        assertEquals(201, response.statusCode(), response.body());
+        assertEquals(HTTP_CREATED, response.statusCode(), response.body());
         assertJson(response);
         JsonNode lobby = JSON.readTree(response.body());
         assertEquals(lobby.path("id").asText(), UUID.fromString(lobby.path("id").asText()).toString());
         assertEquals(ALICE.toString(), lobby.path("hostId").asText());
-        assertEquals(1, lobby.path("memberIds").size());
-        assertEquals(ALICE.toString(), lobby.path("memberIds").get(0).asText());
-        assertEquals(4, lobby.path("capacity").asInt());
-        assertEquals(3, lobby.path("availableSlots").asInt());
+        assertEquals(EXPECTED_INITIAL_MEMBER_COUNT, lobby.path("memberIds").size());
+        assertEquals(ALICE.toString(), lobby.path("memberIds").get(HOST_MEMBER_INDEX).asText());
+        assertEquals(EXPECTED_LOBBY_CAPACITY, lobby.path("capacity").asInt());
+        assertEquals(EXPECTED_INITIAL_AVAILABLE_SLOTS, lobby.path("availableSlots").asInt());
         assertEquals("OPEN", lobby.path("status").asText());
     }
 
     @Test
     void refusesASecondOpenLobbyForTheSamePlayer() throws Exception {
-        assertEquals(201, post("alice").statusCode());
+        assertEquals(HTTP_CREATED, post("alice").statusCode());
 
-        assertError(post("alice"), 409, "PLAYER_ALREADY_IN_OPEN_LOBBY");
+        assertError(post("alice"), HTTP_CONFLICT, "PLAYER_ALREADY_IN_OPEN_LOBBY");
     }
 
     @Test
@@ -119,8 +129,8 @@ class LobbyApiHttpTest {
         HttpResponse<String> aliceResponse = post("alice");
         HttpResponse<String> bobResponse = post("bob");
 
-        assertEquals(201, aliceResponse.statusCode());
-        assertEquals(201, bobResponse.statusCode());
+        assertEquals(HTTP_CREATED, aliceResponse.statusCode());
+        assertEquals(HTTP_CREATED, bobResponse.statusCode());
         JsonNode aliceLobby = JSON.readTree(aliceResponse.body());
         JsonNode bobLobby = JSON.readTree(bobResponse.body());
         assertNotEquals(aliceLobby.path("id"), bobLobby.path("id"));
@@ -136,15 +146,15 @@ class LobbyApiHttpTest {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("{\"hostId\":\"" + BOB + "\"}")));
 
-        assertEquals(201, response.statusCode(), response.body());
+        assertEquals(HTTP_CREATED, response.statusCode(), response.body());
         JsonNode lobby = JSON.readTree(response.body());
         assertEquals(ALICE.toString(), lobby.path("hostId").asText());
-        assertEquals(ALICE.toString(), lobby.path("memberIds").get(0).asText());
+        assertEquals(ALICE.toString(), lobby.path("memberIds").get(HOST_MEMBER_INDEX).asText());
     }
 
     @Test
     void productionConfigurationRejectsRequestsUntilAuthenticationIsIntegrated() throws Exception {
-        HttpServer productionServer = Main.startServer(URI.create("http://127.0.0.1:0/"));
+        HttpServer productionServer = Main.startServer(SERVER_BIND_URI);
         try {
             int port = productionServer.getListeners().iterator().next().getPort();
             URI uri = URI.create("http://127.0.0.1:" + port + "/lobbies");
@@ -153,7 +163,7 @@ class LobbyApiHttpTest {
                     .header("Authorization", "Bearer alice")
                     .POST(HttpRequest.BodyPublishers.noBody()));
 
-            assertError(response, 401, "AUTHENTICATION_REQUIRED");
+            assertError(response, HTTP_UNAUTHORIZED, "AUTHENTICATION_REQUIRED");
         } finally {
             productionServer.shutdownNow();
         }
@@ -169,7 +179,7 @@ class LobbyApiHttpTest {
     }
 
     private HttpResponse<String> send(HttpRequest.Builder request) throws Exception {
-        return client.send(request.timeout(Duration.ofSeconds(5)).build(), HttpResponse.BodyHandlers.ofString());
+        return client.send(request.timeout(REQUEST_TIMEOUT).build(), HttpResponse.BodyHandlers.ofString());
     }
 
     private void assertError(HttpResponse<String> response, int status, String code) throws Exception {

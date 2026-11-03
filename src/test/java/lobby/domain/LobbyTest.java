@@ -12,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LobbyTest {
 
+    private static final int EXPECTED_LOBBY_CAPACITY = 4;
+    private static final int EXPECTED_INITIAL_AVAILABLE_SLOTS = 3;
+
     @Test
     void creatorBecomesHostAndFirstMember() {
         UUID creatorId = UUID.randomUUID();
@@ -27,8 +30,8 @@ class LobbyTest {
         Lobby lobby = new Lobby(UUID.randomUUID());
 
         assertEquals(LobbyStatus.OPEN, lobby.getStatus());
-        assertEquals(4, lobby.getCapacity());
-        assertEquals(3, lobby.getAvailableSlots());
+        assertEquals(EXPECTED_LOBBY_CAPACITY, lobby.getCapacity());
+        assertEquals(EXPECTED_INITIAL_AVAILABLE_SLOTS, lobby.getAvailableSlots());
     }
 
     @Test
@@ -52,7 +55,7 @@ class LobbyTest {
                 () -> lobby.getMemberIds().remove(creatorId));
 
         assertEquals(List.of(creatorId), lobby.getMemberIds());
-        assertEquals(3, lobby.getAvailableSlots());
+        assertEquals(EXPECTED_INITIAL_AVAILABLE_SLOTS, lobby.getAvailableSlots());
     }
 
     @Test

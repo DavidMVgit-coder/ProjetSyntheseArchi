@@ -21,6 +21,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 class CreateLobbyUseCaseTest {
 
+    private static final int EXPECTED_LOBBY_CAPACITY = 4;
+    private static final int EXPECTED_INITIAL_AVAILABLE_SLOTS = 3;
+
     @Test
     void createsAndStoresAnOpenLobbyForItsFirstMemberAndHost() {
         LobbyRepository repository = new InMemoryLobbyRepository();
@@ -32,8 +35,8 @@ class CreateLobbyUseCaseTest {
         Lobby storedLobby = repository.findById(output.id()).orElseThrow();
         assertEquals(playerId, output.hostId());
         assertEquals(List.of(playerId), output.memberIds());
-        assertEquals(4, output.capacity());
-        assertEquals(3, output.availableSlots());
+        assertEquals(EXPECTED_LOBBY_CAPACITY, output.capacity());
+        assertEquals(EXPECTED_INITIAL_AVAILABLE_SLOTS, output.availableSlots());
         assertEquals("OPEN", output.status());
         assertEquals(output.hostId(), storedLobby.getHostId());
         assertEquals(output.memberIds(), storedLobby.getMemberIds());

@@ -24,6 +24,10 @@ import static org.mockito.Mockito.when;
 
 class InMemoryLobbyRepositoryTest {
 
+    private static final int CONCURRENT_CREATION_COUNT = 2;
+    private static final int TEST_TIMEOUT_SECONDS = 15;
+    private static final int WAIT_TIMEOUT_SECONDS = 5;
+
     @Test
     void returnsEmptyForAnUnknownLobby() {
         InMemoryLobbyRepository repository = new InMemoryLobbyRepository();
@@ -78,34 +82,34 @@ class InMemoryLobbyRepositoryTest {
     }
 
     @Test
-    @Timeout(15)
+    @Timeout(TEST_TIMEOUT_SECONDS)
     void acceptsExactlyOneOfTwoConcurrentCreationsForTheSamePlayer() throws Exception {
         InMemoryLobbyRepository repository = new InMemoryLobbyRepository();
         UUID playerId = UUID.randomUUID();
         Lobby first = new Lobby(playerId);
         Lobby second = new Lobby(playerId);
-        CyclicBarrier start = new CyclicBarrier(2);
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+        CyclicBarrier start = new CyclicBarrier(CONCURRENT_CREATION_COUNT);
+        ExecutorService executor = Executors.newFixedThreadPool(CONCURRENT_CREATION_COUNT);
 
         try {
             Future<Boolean> firstResult = executor.submit(() -> createAfterBarrier(repository, first, start));
             Future<Boolean> secondResult = executor.submit(() -> createAfterBarrier(repository, second, start));
 
-            boolean firstCreated = firstResult.get(5, TimeUnit.SECONDS);
-            boolean secondCreated = secondResult.get(5, TimeUnit.SECONDS);
+            boolean firstCreated = firstResult.get(WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            boolean secondCreated = secondResult.get(WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
             assertNotEquals(firstCreated, secondCreated);
             assertEquals(firstCreated, repository.findById(first.getId()).isPresent());
             assertEquals(secondCreated, repository.findById(second.getId()).isPresent());
         } finally {
             executor.shutdownNow();
-            assertTrue(executor.awaitTermination(5, TimeUnit.SECONDS));
+            assertTrue(executor.awaitTermination(WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS));
         }
     }
 
     private static boolean createAfterBarrier(
             InMemoryLobbyRepository repository, Lobby lobby, CyclicBarrier start) throws Exception {
-        start.await(5, TimeUnit.SECONDS);
+        start.await(WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         try {
             repository.create(lobby);
             return true;

@@ -11,12 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CreateLobbyOutputTest {
 
+    private static final int LOBBY_CAPACITY = 4;
+    private static final int INITIAL_AVAILABLE_SLOTS = 3;
+
     @Test
     void keepsAnImmutableSnapshotOfTheMembers() {
         UUID hostId = UUID.randomUUID();
         List<UUID> members = new ArrayList<>(List.of(hostId));
         CreateLobbyOutput output = new CreateLobbyOutput(
-                UUID.randomUUID(), hostId, members, 4, 3, "OPEN");
+                UUID.randomUUID(), hostId, members, LOBBY_CAPACITY, INITIAL_AVAILABLE_SLOTS, "OPEN");
 
         members.clear();
 

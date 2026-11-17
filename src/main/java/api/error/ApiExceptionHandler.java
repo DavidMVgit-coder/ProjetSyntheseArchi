@@ -3,6 +3,7 @@ package api.error;
 import application.GetHero.HeroNotFoundException;
 import application.GetHero.InvalidHeroIdException;
 import application.InvalidHeroInputException;
+import api.lobby.AuthenticationRequiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import domain.exception.DomainException;
 import domain.exception.HeroAlreadyExistsException;
@@ -14,6 +15,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import lobby.domain.exception.PlayerAlreadyInOpenLobbyException;
 
 import java.time.Instant;
 import java.util.logging.Level;
@@ -29,6 +31,12 @@ public class ApiExceptionHandler implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
+        if (exception instanceof AuthenticationRequiredException) {
+            return error(Response.Status.UNAUTHORIZED, "AUTHENTICATION_REQUIRED", exception.getMessage());
+        }
+        if (exception instanceof PlayerAlreadyInOpenLobbyException) {
+            return error(Response.Status.CONFLICT, "PLAYER_ALREADY_IN_OPEN_LOBBY", exception.getMessage());
+        }
         if (exception instanceof HeroAlreadyExistsException) {
             return error(Response.Status.CONFLICT, "HERO_ALREADY_EXISTS", exception.getMessage());
         }

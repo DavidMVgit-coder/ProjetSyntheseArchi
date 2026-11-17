@@ -134,3 +134,49 @@ Content-Type: application/json
   "maxMana": 0
 }
 ```
+
+# Création d'un lobby — issue #27
+
+`POST /lobbies` crée un lobby pour le joueur authentifié. Aucun corps de requête
+n'est nécessaire : l'identité de l'hôte vient du contexte d'authentification du
+serveur. Les identifiants de joueurs sont distincts des identifiants de héros.
+
+Le créateur devient l'hôte et l'unique membre du lobby. Le lobby est `OPEN`, sa
+capacité est de 4 joueurs et il reste 3 places. Un joueur déjà membre d'un lobby
+`OPEN` ne peut pas en créer un autre, même avec deux requêtes simultanées.
+Les lobbies sont conservés en mémoire et disparaissent à l'arrêt du serveur.
+
+Exemple de réponse à une création authentifiée (`201 Created`) :
+
+```json
+{
+  "id": "e31b7953-827c-4859-9224-7f2b16a5da59",
+  "hostId": "8feadfd3-8280-4d70-8770-fc28c6641c22",
+  "memberIds": ["8feadfd3-8280-4d70-8770-fc28c6641c22"],
+  "capacity": 4,
+  "availableSlots": 3,
+  "status": "OPEN"
+}
+```
+
+| Situation | Statut HTTP | Code d'erreur |
+|---|---|---|
+| Identité authentifiée absente ou inexploitable | `401` | `AUTHENTICATION_REQUIRED` |
+| Joueur déjà membre d'un lobby ouvert | `409` | `PLAYER_ALREADY_IN_OPEN_LOBBY` |
+
+## Raccordement à l'authentification
+
+L'authentification est développée séparément. Son filtre Jersey devra valider
+les identifiants de connexion puis installer un `SecurityContext` dont
+`getUserPrincipal().getName()` contient l'UUID du joueur connecté.
+La création de lobby utilise uniquement cette identité vérifiée ; fournir un
+`playerId` dans le JSON ou dans un en-tête ne suffit pas à s'authentifier.
+
+Tant que ce filtre n'est pas branché, le serveur refuse `POST /lobbies` avec
+`401`. Les tests HTTP utilisent un filtre réservé aux tests pour exercer les
+cas authentifiés. Le parcours de connexion réel reste à valider lors de son
+intégration. La consultation et la participation à un lobby ne font pas partie
+de cette issue.
+
+Les tests du domaine, de la création, du stockage et de l'API s'exécutent avec
+`mvn clean verify` sous Java 21, en même temps que les tests des héros.

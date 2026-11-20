@@ -31,4 +31,9 @@ public class InMemoryLobbyRepository implements LobbyRepository {
     public synchronized Optional<Lobby> findById(UUID id) {
         return Optional.ofNullable(lobbies.get(id));
     }
+
+    @Override
+    public synchronized void save(Lobby lobby) {
+        lobbies.put(lobby.getId(), lobby);
+    }
 }

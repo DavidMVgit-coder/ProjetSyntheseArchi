@@ -1,5 +1,7 @@
 package lobby.domain;
 
 public enum LobbyStatus {
-    OPEN
+    OPEN,
+    STARTED,
+    CLOSED
 }

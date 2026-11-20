@@ -17,4 +17,9 @@ public interface LobbyRepository {
     void create(Lobby lobby);
 
     Optional<Lobby> findById(UUID id);
+
+    /**
+     * Enregistre un lobby existant après une modification (par exemple : un joueur l'a quitté).
+     */
+    void save(Lobby lobby);
 }

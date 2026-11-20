@@ -15,7 +15,11 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import lobby.application.ForbiddenActionException;
+import lobby.application.LobbyNotFoundException;
+import lobby.domain.exception.GameAlreadyStartedException;
 import lobby.domain.exception.PlayerAlreadyInOpenLobbyException;
+import lobby.domain.exception.PlayerNotInLobbyException;
 
 import java.time.Instant;
 import java.util.logging.Level;
@@ -36,6 +40,18 @@ public class ApiExceptionHandler implements ExceptionMapper<Exception> {
         }
         if (exception instanceof PlayerAlreadyInOpenLobbyException) {
             return error(Response.Status.CONFLICT, "PLAYER_ALREADY_IN_OPEN_LOBBY", exception.getMessage());
+        }
+        if (exception instanceof LobbyNotFoundException) {
+            return error(Response.Status.NOT_FOUND, "LOBBY_NOT_FOUND", exception.getMessage());
+        }
+        if (exception instanceof PlayerNotInLobbyException) {
+            return error(Response.Status.NOT_FOUND, "PLAYER_NOT_IN_LOBBY", exception.getMessage());
+        }
+        if (exception instanceof ForbiddenActionException) {
+            return error(Response.Status.FORBIDDEN, "FORBIDDEN", exception.getMessage());
+        }
+        if (exception instanceof GameAlreadyStartedException) {
+            return error(Response.Status.CONFLICT, "GAME_ALREADY_STARTED", exception.getMessage());
         }
         if (exception instanceof HeroAlreadyExistsException) {
             return error(Response.Status.CONFLICT, "HERO_ALREADY_EXISTS", exception.getMessage());

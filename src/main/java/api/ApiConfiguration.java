@@ -8,6 +8,7 @@ import api.hero.HeroResource;
 import api.lobby.LobbyResource;
 import infrastructure.InMemoryHeroRepository;
 import lobby.application.createLobby.CreateLobbyUseCase;
+import lobby.application.leaveLobby.LeaveLobbyUseCase;
 import lobby.application.port.LobbyRepository;
 import lobby.infrastructure.InMemoryLobbyRepository;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -28,6 +29,7 @@ public class ApiConfiguration extends ResourceConfig {
                 bind(new CreateHeroUseCase(repository)).to(CreateHeroUseCase.class);
                 bind(new GetHeroUseCase(repository)).to(GetHeroUseCase.class);
                 bind(new CreateLobbyUseCase(lobbyRepository)).to(CreateLobbyUseCase.class);
+                bind(new LeaveLobbyUseCase(lobbyRepository)).to(LeaveLobbyUseCase.class);
             }
         });
 

@@ -1,4 +1,4 @@
-package item.domain;
+cd ..package item.domain;
 
 import item.domain.inventory.InventoryItem;
 

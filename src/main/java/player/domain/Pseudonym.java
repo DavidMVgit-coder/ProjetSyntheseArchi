@@ -27,7 +27,6 @@ public final class Pseudonym {
         return value;
     }
 
-    /** Forme utilisée pour comparer et détecter les doublons. */
     public String key() {
         return value.toLowerCase(Locale.ROOT);
     }

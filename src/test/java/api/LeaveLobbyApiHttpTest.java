@@ -23,9 +23,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Story L4 : DELETE /lobbies/{lobbyId}/players/{playerId}
- */
+
 class LeaveLobbyApiHttpTest {
 
     private static final ObjectMapper JSON = new ObjectMapper();
@@ -97,7 +95,6 @@ class LeaveLobbyApiHttpTest {
         assertEquals(401, response.statusCode());
     }
 
-    // ---------- Méthodes utilitaires ----------
 
     private String createLobby(String token) throws Exception {
         HttpResponse<String> response = post("/lobbies", token);
@@ -130,7 +127,6 @@ class LeaveLobbyApiHttpTest {
         assertEquals(code, error.path("code").asText());
     }
 
-    /** Simule, dans les tests seulement, le joueur connecté (en attendant J2). */
     @Priority(Priorities.AUTHENTICATION)
     private static final class TestAuthenticationFilter implements ContainerRequestFilter {
 

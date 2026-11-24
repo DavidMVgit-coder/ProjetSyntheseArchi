@@ -26,8 +26,6 @@ public class CreatePlayerUseCase {
             throw new InvalidPlayerDataException("Le corps de la requête est obligatoire.");
         }
 
-        // Les objets-valeurs valident les formats (400, puis 422 pour le mot de passe)
-        // avant toute vérification d'unicité (409), faite par le dépôt.
         Pseudonym pseudonym = new Pseudonym(command.pseudonym());
         Email email = new Email(command.email());
         RawPassword password = new RawPassword(command.password());

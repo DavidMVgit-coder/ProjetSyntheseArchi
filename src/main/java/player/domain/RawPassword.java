@@ -3,10 +3,7 @@ package player.domain;
 import player.domain.exception.InvalidPlayerDataException;
 import player.domain.exception.PasswordTooShortException;
 
-/**
- * Objet-valeur éphémère : le mot de passe tel que saisi. Il n'est jamais conservé,
- * il sert seulement à être haché. Son affichage est masqué pour qu'il n'aille jamais dans un journal.
- */
+
 public final class RawPassword {
 
     public static final int MIN_LENGTH = 8;

@@ -2,7 +2,6 @@ package player.domain;
 
 import java.util.Objects;
 
-/** Objet-valeur : mot de passe haché (irréversible). C'est la seule forme conservée. */
 public record PasswordHash(String value) {
 
     public PasswordHash {

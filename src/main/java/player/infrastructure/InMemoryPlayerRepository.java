@@ -16,13 +16,11 @@ import java.util.UUID;
 public class InMemoryPlayerRepository implements PlayerRepository {
 
     private final Map<UUID, Player> players = new HashMap<>();
-    // Pseudonym et Email se comparent sans tenir compte des majuscules (c'est le domaine qui le décide, via equals).
     private final Set<Pseudonym> pseudonyms = new HashSet<>();
     private final Set<Email> emails = new HashSet<>();
 
     @Override
     public synchronized void create(Player player) {
-        // Toujours le pseudonyme d'abord, puis le courriel : le résultat ne dépend pas de l'ordre d'insertion.
         if (pseudonyms.contains(player.getPseudonym())) {
             throw new PseudonymAlreadyTakenException(player.getPseudonym().getValue());
         }

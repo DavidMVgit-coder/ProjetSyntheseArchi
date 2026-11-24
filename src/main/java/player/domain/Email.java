@@ -5,7 +5,6 @@ import player.domain.exception.InvalidPlayerDataException;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/** Objet-valeur : adresse courriel valide. L'égalité ignore la casse. */
 public final class Email {
 
     private static final Pattern FORMAT = Pattern.compile("[^@\\s]+@[^@\\s.]+(\\.[^@\\s.]+)+");

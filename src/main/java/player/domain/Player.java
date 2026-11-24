@@ -3,10 +3,7 @@ package player.domain;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Racine d'agrégat : un joueur. Son identité est son identifiant.
- * Il ne détient jamais le mot de passe en clair, seulement son hachage.
- */
+
 public final class Player {
 
     private final UUID id;

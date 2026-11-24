@@ -7,10 +7,7 @@ import player.application.port.PasswordHasher;
 import player.domain.PasswordHash;
 import player.domain.RawPassword;
 
-/**
- * Adaptateur Argon2id (librairie Password4j). Le hachage obtenu commence par « $argon2id$ »
- * et contient un sel aléatoire : deux mots de passe identiques donnent deux hachages différents.
- */
+
 public class Argon2PasswordHasher implements PasswordHasher {
 
     // Paramètres recommandés par l'OWASP : 19 Mio de mémoire, 2 itérations, 1 thread.

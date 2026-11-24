@@ -5,11 +5,7 @@ import player.domain.exception.InvalidPlayerDataException;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/**
- * Objet-valeur : pseudonyme de 3 à 20 caractères (lettres, chiffres ou tiret bas).
- * La casse saisie est conservée pour l'affichage, mais l'égalité l'ignore :
- * « aria » et « Aria » sont le même pseudonyme.
- */
+
 public final class Pseudonym {
 
     private static final Pattern FORMAT = Pattern.compile("[\\p{L}0-9_]{3,20}");

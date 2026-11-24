@@ -10,7 +10,6 @@ import player.domain.RawPassword;
 
 public class Argon2PasswordHasher implements PasswordHasher {
 
-    // Paramètres recommandés par l'OWASP : 19 Mio de mémoire, 2 itérations, 1 thread.
     private static final Argon2Function ARGON2 = Argon2Function.getInstance(19 * 1024, 2, 1, 32, Argon2.ID);
 
     @Override

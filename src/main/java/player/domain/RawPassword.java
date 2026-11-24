@@ -20,7 +20,6 @@ public final class RawPassword {
         this.value = value;
     }
 
-    /** À utiliser seulement par le hacheur. */
     public String getValue() {
         return value;
     }

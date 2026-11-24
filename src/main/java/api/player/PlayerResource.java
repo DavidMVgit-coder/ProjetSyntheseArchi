@@ -12,7 +12,6 @@ import jakarta.ws.rs.core.UriInfo;
 import player.application.createPlayer.CreatePlayerCommand;
 import player.application.createPlayer.CreatePlayerUseCase;
 
-/** Couche API : aucune règle métier, seulement la traduction HTTP ⇄ cas d'utilisation. */
 @Path("/players")
 @Produces(MediaType.APPLICATION_JSON)
 public class PlayerResource {

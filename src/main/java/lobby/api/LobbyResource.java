@@ -1,4 +1,4 @@
-package api.lobby;
+package lobby.api;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;

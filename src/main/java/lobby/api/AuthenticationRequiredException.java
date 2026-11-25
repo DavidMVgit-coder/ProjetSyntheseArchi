@@ -1,4 +1,4 @@
-package api.lobby;
+package lobby.api;
 
 public class AuthenticationRequiredException extends RuntimeException {
 

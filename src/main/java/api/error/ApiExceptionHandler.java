@@ -1,6 +1,5 @@
 package api.error;
 
-import api.lobby.AuthenticationRequiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import hero.application.InvalidHeroInputException;
 import hero.application.getHero.HeroNotFoundException;
@@ -15,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
+import lobby.api.AuthenticationRequiredException;
 import lobby.application.ForbiddenActionException;
 import lobby.application.LobbyNotFoundException;
 import lobby.domain.exception.GameAlreadyStartedException;

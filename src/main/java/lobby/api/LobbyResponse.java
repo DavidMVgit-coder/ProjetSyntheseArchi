@@ -1,4 +1,4 @@
-package api.lobby;
+package lobby.api;
 
 import lobby.application.createLobby.CreateLobbyOutput;
 

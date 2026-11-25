@@ -1,12 +1,12 @@
 package api;
 
 import api.error.ApiExceptionHandler;
-import api.lobby.LobbyResource;
 import hero.api.HeroResource;
 import hero.application.createHero.CreateHeroUseCase;
 import hero.application.getHero.GetHeroUseCase;
 import hero.application.port.HeroRepository;
 import hero.infrastructure.InMemoryHeroRepository;
+import lobby.api.LobbyResource;
 import lobby.application.createLobby.CreateLobbyUseCase;
 import lobby.application.leaveLobby.LeaveLobbyUseCase;
 import lobby.application.port.LobbyRepository;

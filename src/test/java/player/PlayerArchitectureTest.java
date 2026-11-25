@@ -14,19 +14,19 @@ class PlayerArchitectureTest {
     static final ArchRule domainDependsOnNothingOutsideItself =
             noClasses().that().resideInAPackage("player.domain..")
                     .should().dependOnClassesThat().resideInAnyPackage(
-                            "player.application..", "player.infrastructure..", "api..",
+                            "player.application..", "player.infrastructure..", "player.api..", "api..",
                             "jakarta..", "com.fasterxml..", "com.password4j..");
 
     @ArchTest
     static final ArchRule applicationDoesNotKnowInfrastructureOrApi =
             noClasses().that().resideInAPackage("player.application..")
                     .should().dependOnClassesThat().resideInAnyPackage(
-                            "player.infrastructure..", "api..",
+                            "player.infrastructure..", "player.api..", "api..",
                             "jakarta..", "com.fasterxml..", "com.password4j..");
 
     @ArchTest
     static final ArchRule playerApiOnlyTalksToTheApplicationLayer =
-            noClasses().that().resideInAPackage("api.player..")
+            noClasses().that().resideInAPackage("player.api..")
                     .should().dependOnClassesThat().resideInAnyPackage(
                             "player.domain..", "player.infrastructure..");
 

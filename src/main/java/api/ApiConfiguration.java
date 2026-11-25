@@ -2,7 +2,6 @@ package api;
 
 import api.error.ApiExceptionHandler;
 import api.lobby.LobbyResource;
-import api.player.PlayerResource;
 import hero.api.HeroResource;
 import hero.application.createHero.CreateHeroUseCase;
 import hero.application.getHero.GetHeroUseCase;
@@ -16,6 +15,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import player.api.PlayerResource;
 import player.application.createPlayer.CreatePlayerUseCase;
 import player.application.port.PasswordHasher;
 import player.application.port.PlayerRepository;

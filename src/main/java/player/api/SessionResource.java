@@ -1,4 +1,4 @@
-package api.session;
+package player.api;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;

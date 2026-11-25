@@ -1,4 +1,4 @@
-package api.player;
+package player.api;
 
 import player.application.createPlayer.CreatePlayerOutput;
 

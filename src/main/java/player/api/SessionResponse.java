@@ -1,4 +1,4 @@
-package api.session;
+package player.api;
 
 import player.application.login.LoginOutput;
 

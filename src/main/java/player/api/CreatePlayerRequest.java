@@ -1,4 +1,4 @@
-package api.player;
+package player.api;
 
 public record CreatePlayerRequest(String pseudonym, String email, String password) {
 

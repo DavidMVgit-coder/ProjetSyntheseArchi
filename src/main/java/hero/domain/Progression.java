@@ -1,5 +1,7 @@
 package hero.domain;
 
+import java.util.Arrays;
+
 public final class Progression {
 
     public static final int MIN_LEVEL = 1;
@@ -17,14 +19,17 @@ public final class Progression {
 
         experience += experiencePoints;
 
-        int levelsGained = 0;
-
-        while (level < MAX_LEVEL && experience >= XP_REQUIRED_PER_LEVEL[level]) {
-            level++;
-            levelsGained++;
-        }
+        int newLevel = levelForExperience(experience);
+        int levelsGained = newLevel - level;
+        level = newLevel;
 
         return levelsGained;
+    }
+
+    private static int levelForExperience(int experience) {
+        return (int) Arrays.stream(XP_REQUIRED_PER_LEVEL)
+                .filter(required -> experience >= required)
+                .count();
     }
 
     public int getLevel() {

@@ -1,6 +1,6 @@
 package api.hero;
 
-import application.CreateHero.HeroOutput;
+import hero.application.HeroOutput;
 
 public final class HeroResponseMapper {
 

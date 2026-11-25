@@ -1,4 +1,4 @@
-package application.CreateHero;
+package hero.application;
 
 public record HeroOutput(
         String id,

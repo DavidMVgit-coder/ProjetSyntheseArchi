@@ -1,4 +1,4 @@
-package application.GetHero;
+package hero.application.getHero;
 
 public class HeroNotFoundException extends RuntimeException {
 

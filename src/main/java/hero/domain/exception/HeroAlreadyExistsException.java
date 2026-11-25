@@ -1,6 +1,6 @@
-package domain.exception;
+package hero.domain.exception;
 
-import domain.nom.HeroName;
+import hero.domain.HeroName;
 
 public class HeroAlreadyExistsException extends DomainException {
 

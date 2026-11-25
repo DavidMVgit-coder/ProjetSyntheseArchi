@@ -1,8 +1,8 @@
 package api.hero;
 
-import application.CreateHero.CreateHeroUseCase;
-import application.CreateHero.HeroOutput;
-import application.GetHero.GetHeroUseCase;
+import hero.application.HeroOutput;
+import hero.application.createHero.CreateHeroUseCase;
+import hero.application.getHero.GetHeroUseCase;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;

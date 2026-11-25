@@ -1,8 +1,8 @@
 package hero.domain.exception;
 
-public class InvalidHeroNameException extends RuntimeException {
+public class InvalidHeroNameException extends DomainException {
 
-    public InvalidHeroNameException() {
-        super("Le nom du héro est invalide.");
+    public InvalidHeroNameException(String message) {
+        super(message);
     }
 }

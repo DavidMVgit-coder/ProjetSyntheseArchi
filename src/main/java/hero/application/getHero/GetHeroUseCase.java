@@ -1,23 +1,19 @@
-package application.GetHero;
+package hero.application.getHero;
 
-import application.CreateHero.HeroOutput;
-import application.CreateHero.HeroOutputMapper;
-import application.port.HeroRepository;
+import hero.application.HeroOutput;
+import hero.application.HeroOutputMapper;
+import hero.application.port.HeroRepository;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class GetHeroUseCase {
 
     private final HeroRepository repository;
-    private final HeroOutputMapper outputMapper;
+    private final HeroOutputMapper outputMapper = new HeroOutputMapper();
 
     public GetHeroUseCase(HeroRepository repository) {
-        this(repository, new HeroOutputMapper());
-    }
-
-    GetHeroUseCase(HeroRepository repository, HeroOutputMapper outputMapper) {
-        this.repository = repository;
-        this.outputMapper = outputMapper;
+        this.repository = Objects.requireNonNull(repository);
     }
 
     public HeroOutput execute(String id) {

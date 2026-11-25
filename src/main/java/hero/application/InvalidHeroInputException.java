@@ -1,4 +1,4 @@
-package application;
+package hero.application;
 
 public class InvalidHeroInputException extends RuntimeException {
 

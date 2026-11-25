@@ -1,7 +1,7 @@
 package api.hero;
 
-import application.CreateHero.CreateHeroCommand;
-import application.InvalidHeroInputException;
+import hero.application.InvalidHeroInputException;
+import hero.application.createHero.CreateHeroCommand;
 
 public final class CreateHeroRequestMapper {
 

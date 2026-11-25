@@ -1,12 +1,12 @@
 package api.error;
 
-import application.GetHero.HeroNotFoundException;
-import application.GetHero.InvalidHeroIdException;
-import application.InvalidHeroInputException;
 import api.lobby.AuthenticationRequiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import domain.exception.DomainException;
-import domain.exception.HeroAlreadyExistsException;
+import hero.application.InvalidHeroInputException;
+import hero.application.getHero.HeroNotFoundException;
+import hero.application.getHero.InvalidHeroIdException;
+import hero.domain.exception.DomainException;
+import hero.domain.exception.HeroAlreadyExistsException;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;

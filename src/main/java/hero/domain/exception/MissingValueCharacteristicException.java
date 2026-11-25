@@ -2,7 +2,7 @@ package hero.domain.exception;
 
 import hero.domain.Characteristic;
 
-public class MissingValueCharacteristicException extends RuntimeException {
+public class MissingValueCharacteristicException extends DomainException {
 
     private final Characteristic characteristic;
 

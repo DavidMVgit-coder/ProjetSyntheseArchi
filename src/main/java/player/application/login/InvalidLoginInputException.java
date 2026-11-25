@@ -1,5 +1,4 @@
-package player.application.domain.exception;
-
+package player.application.login;
 
 public class InvalidLoginInputException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package player.application.domain.exception;
+package player.application.login;
 
 public class InvalidCredentialsException extends RuntimeException {
 

@@ -10,6 +10,7 @@ import player.domain.exception.PseudonymAlreadyTakenException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,18 +18,23 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     private final Map<UUID, Player> players = new HashMap<>();
     private final Set<Pseudonym> pseudonyms = new HashSet<>();
-    private final Set<Email> emails = new HashSet<>();
+    private final Map<Email, Player> playersByEmail = new HashMap<>();
 
     @Override
     public synchronized void create(Player player) {
         if (pseudonyms.contains(player.getPseudonym())) {
             throw new PseudonymAlreadyTakenException(player.getPseudonym().getValue());
         }
-        if (emails.contains(player.getEmail())) {
+        if (playersByEmail.containsKey(player.getEmail())) {
             throw new EmailAlreadyTakenException(player.getEmail().getValue());
         }
         players.put(player.getId(), player);
         pseudonyms.add(player.getPseudonym());
-        emails.add(player.getEmail());
+        playersByEmail.put(player.getEmail(), player);
+    }
+
+    @Override
+    public synchronized Optional<Player> findByEmail(Email email) {
+        return Optional.ofNullable(playersByEmail.get(email));
     }
 }

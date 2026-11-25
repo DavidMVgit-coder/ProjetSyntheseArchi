@@ -4,7 +4,11 @@ import player.application.port.PasswordHasher;
 import player.application.port.PlayerRepository;
 import player.application.port.TokenService;
 import player.domain.Email;
+import player.domain.PasswordHash;
 import player.domain.Player;
+import player.domain.RawPassword;
+import player.domain.exception.InvalidPlayerDataException;
+import player.domain.exception.PasswordTooShortException;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -16,13 +20,13 @@ public class LoginUseCase {
     private final PasswordHasher passwordHasher;
     private final TokenService tokenService;
     // Hash d'un compte qui n'existe pas : le temps de calcul est le même qu'il y ait un compte ou non.
-    private final String unknownAccountHash;
+    private final PasswordHash unknownAccountHash;
 
     public LoginUseCase(PlayerRepository players, PasswordHasher passwordHasher, TokenService tokenService) {
         this.players = Objects.requireNonNull(players);
         this.passwordHasher = Objects.requireNonNull(passwordHasher);
         this.tokenService = Objects.requireNonNull(tokenService);
-        this.unknownAccountHash = passwordHasher.hash(UUID.randomUUID().toString());
+        this.unknownAccountHash = passwordHasher.hash(new RawPassword(UUID.randomUUID().toString()));
     }
 
     public LoginOutput execute(LoginCommand command) {
@@ -32,16 +36,33 @@ public class LoginUseCase {
             throw new InvalidLoginInputException();
         }
 
-        Optional<Player> player = players.findByEmail(new Email(command.email()));
-        String hashToCheck = player.map(Player::passwordHash).orElse(unknownAccountHash);
-        boolean passwordMatches = passwordHasher.matches(command.password(), hashToCheck);
+        Optional<Player> player = findByEmail(command.email());
+        PasswordHash hashToCheck = player.map(Player::getPasswordHash).orElse(unknownAccountHash);
+        boolean passwordMatches = matches(command.password(), hashToCheck);
 
         if (player.isEmpty() || !passwordMatches) {
             throw new InvalidCredentialsException();
         }
 
-        UUID playerId = player.get().id();
+        UUID playerId = player.get().getId();
         return new LoginOutput(playerId, tokenService.issue(playerId));
     }
-}
 
+    private Optional<Player> findByEmail(String email) {
+        try {
+            return players.findByEmail(new Email(email));
+        } catch (InvalidPlayerDataException malformedEmail) {
+            // Un courriel mal formé ne peut correspondre à aucun compte.
+            return Optional.empty();
+        }
+    }
+
+    private boolean matches(String password, PasswordHash hash) {
+        try {
+            return passwordHasher.matches(new RawPassword(password), hash);
+        } catch (PasswordTooShortException tooShort) {
+            // Un mot de passe trop court ne peut correspondre à aucun compte.
+            return false;
+        }
+    }
+}

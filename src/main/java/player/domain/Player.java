@@ -11,8 +11,8 @@ public final class Player {
     private final Email email;
     private final PasswordHash passwordHash;
 
-    public Player(Pseudonym pseudonym, Email email, PasswordHash passwordHash) {
-        this.id = UUID.randomUUID();
+    public Player(UUID id, Pseudonym pseudonym, Email email, PasswordHash passwordHash) {
+        this.id = Objects.requireNonNull(id, "L'identifiant est obligatoire.");
         this.pseudonym = Objects.requireNonNull(pseudonym, "Le pseudonyme est obligatoire.");
         this.email = Objects.requireNonNull(email, "Le courriel est obligatoire.");
         this.passwordHash = Objects.requireNonNull(passwordHash, "Le hachage est obligatoire.");

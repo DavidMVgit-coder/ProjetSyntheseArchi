@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import player.domain.Email;
 import player.domain.PasswordHash;
 import player.domain.Player;
+import player.domain.PlayerFactory;
 import player.domain.Pseudonym;
 import player.domain.exception.EmailAlreadyTakenException;
 import player.domain.exception.PseudonymAlreadyTakenException;
@@ -16,7 +17,7 @@ class InMemoryPlayerRepositoryTest {
     private final InMemoryPlayerRepository repository = new InMemoryPlayerRepository();
 
     private Player player(String pseudonym, String email) {
-        return new Player(new Pseudonym(pseudonym), new Email(email), new PasswordHash("hash"));
+        return PlayerFactory.create(new Pseudonym(pseudonym), new Email(email), new PasswordHash("hash"));
     }
 
     @Test

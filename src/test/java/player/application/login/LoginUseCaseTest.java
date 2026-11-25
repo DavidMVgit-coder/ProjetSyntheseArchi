@@ -7,6 +7,7 @@ import player.application.port.PasswordHasher;
 import player.application.port.TokenService;
 import player.domain.Email;
 import player.domain.Player;
+import player.domain.PlayerFactory;
 import player.domain.Pseudonym;
 import player.domain.RawPassword;
 import player.infrastructure.InMemoryPlayerRepository;
@@ -27,7 +28,7 @@ class LoginUseCaseTest {
     @BeforeEach
     void setUp() {
         players = new InMemoryPlayerRepository();
-        aria = new Player(new Pseudonym("Aria"), new Email("aria@mail.com"), hasher.hash(new RawPassword("dragon-2026")));
+        aria = PlayerFactory.create(new Pseudonym("Aria"), new Email("aria@mail.com"), hasher.hash(new RawPassword("dragon-2026")));
         players.create(aria);
         useCase = new LoginUseCase(players, hasher, new FakeTokenService());
     }

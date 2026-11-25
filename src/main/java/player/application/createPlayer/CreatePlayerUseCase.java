@@ -5,6 +5,7 @@ import player.application.port.PlayerRepository;
 import player.domain.Email;
 import player.domain.PasswordHash;
 import player.domain.Player;
+import player.domain.PlayerFactory;
 import player.domain.Pseudonym;
 import player.domain.RawPassword;
 import player.domain.exception.InvalidPlayerDataException;
@@ -31,7 +32,7 @@ public class CreatePlayerUseCase {
         RawPassword password = new RawPassword(command.password());
 
         PasswordHash hash = passwordHasher.hash(password);
-        Player player = new Player(pseudonym, email, hash);
+        Player player = PlayerFactory.create(pseudonym, email, hash);
         repository.create(player);
 
         return new CreatePlayerOutput(player.getId(), pseudonym.getValue(), email.getValue());

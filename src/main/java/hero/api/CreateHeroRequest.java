@@ -1,4 +1,4 @@
-package api.hero;
+package hero.api;
 
 public record CreateHeroRequest(
         String name,

@@ -1,9 +1,9 @@
 package api;
 
 import api.error.ApiExceptionHandler;
-import api.hero.HeroResource;
 import api.lobby.LobbyResource;
 import api.player.PlayerResource;
+import hero.api.HeroResource;
 import hero.application.createHero.CreateHeroUseCase;
 import hero.application.getHero.GetHeroUseCase;
 import hero.application.port.HeroRepository;

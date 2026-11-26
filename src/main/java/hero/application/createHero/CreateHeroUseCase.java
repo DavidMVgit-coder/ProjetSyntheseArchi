@@ -10,7 +10,6 @@ import hero.domain.HeroClass;
 import hero.domain.HeroFactory;
 import hero.domain.HeroName;
 import hero.domain.Species;
-import hero.domain.exception.HeroAlreadyExistsException;
 
 import java.util.EnumMap;
 import java.util.Locale;
@@ -31,10 +30,6 @@ public class CreateHeroUseCase {
         Species species = parseEnum(command.species(), Species.class, "species");
         HeroClass heroClass = parseEnum(command.heroClass(), HeroClass.class, "heroClass");
 
-        if (repository.existsByName(name)) {
-            throw new HeroAlreadyExistsException(name);
-        }
-
         Map<Characteristic, Integer> baseValues = new EnumMap<>(Characteristic.class);
         baseValues.put(Characteristic.STRENGTH, command.strength());
         baseValues.put(Characteristic.DEXTERITY, command.dexterity());
@@ -44,7 +39,7 @@ public class CreateHeroUseCase {
         baseValues.put(Characteristic.CHARISMA, command.charisma());
 
         Hero hero = HeroFactory.createHeroLevel1(name, species, heroClass, baseValues);
-        repository.save(hero);
+        repository.create(hero);
         return outputMapper.toOutput(hero);
     }
 

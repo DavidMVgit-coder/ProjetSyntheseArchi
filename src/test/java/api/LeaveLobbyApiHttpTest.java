@@ -57,7 +57,6 @@ class LeaveLobbyApiHttpTest {
         HttpResponse<String> response = leave(lobbyId, ALICE, "alice");
 
         assertEquals(204, response.statusCode());
-        // Alice n'est plus dans un lobby ouvert : elle peut en créer un autre.
         assertEquals(201, post("/lobbies", "alice").statusCode());
     }
 

@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.Response;
 import player.application.login.LoginCommand;
 import player.application.login.LoginUseCase;
 
-/** POST /sessions : seule route de joueur accessible sans être connecté. */
 @Path("/sessions")
 @Produces(MediaType.APPLICATION_JSON)
 public class SessionResource {

@@ -14,7 +14,6 @@ public final class PlayerFactory {
         return new Player(idFor(email), pseudonym, email, passwordHash);
     }
 
-    // Identifiant déterministe dérivé du courriel : unique tant que le courriel l'est.
     private static UUID idFor(Email email) {
         byte[] name = (ID_NAMESPACE + email.key()).getBytes(StandardCharsets.UTF_8);
         return UUID.nameUUIDFromBytes(name);

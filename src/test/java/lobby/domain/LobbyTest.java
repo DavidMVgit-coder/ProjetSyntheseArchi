@@ -66,8 +66,6 @@ class LobbyTest {
         assertThrows(NullPointerException.class, () -> new Lobby(null));
     }
 
-    // ---------- Story L4 : quitter un lobby ----------
-
     @Test
     void aMemberWhoLeavesFreesTheirSeat() {
         UUID host = UUID.randomUUID();
@@ -138,7 +136,4 @@ class LobbyTest {
         assertThrows(PlayerNotInLobbyException.class, () -> lobby.leave(bram));
         assertFalse(lobby.getMemberIds().contains(bram));
     }
-
-    // À ajouter avec la story L6 (quand Lobby aura une méthode pour lancer la partie) :
-    // « quitter après le lancement est refusé avec GameAlreadyStartedException ».
 }

@@ -2,9 +2,6 @@ package item.domain;
 
 import item.domain.inventory.InventoryItem;
 
-/**
- * Item
- */
 public class Item implements InventoryItem {
     private final String name;
 

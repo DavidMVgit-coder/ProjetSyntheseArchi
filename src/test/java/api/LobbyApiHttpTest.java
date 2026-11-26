@@ -197,7 +197,6 @@ class LobbyApiHttpTest {
         assertTrue(response.headers().firstValue("Content-Type").orElse("").startsWith("application/json"));
     }
 
-    /** Simule uniquement dans les tests le contexte fourni par la future authentification. */
     @Priority(Priorities.AUTHENTICATION)
     private static final class TestAuthenticationFilter implements ContainerRequestFilter {
 

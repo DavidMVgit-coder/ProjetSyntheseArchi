@@ -19,7 +19,6 @@ public class LoginUseCase {
     private final PlayerRepository players;
     private final PasswordHasher passwordHasher;
     private final TokenService tokenService;
-    // Hash d'un compte qui n'existe pas : le temps de calcul est le même qu'il y ait un compte ou non.
     private final PasswordHash unknownAccountHash;
 
     public LoginUseCase(PlayerRepository players, PasswordHasher passwordHasher, TokenService tokenService) {
@@ -52,7 +51,6 @@ public class LoginUseCase {
         try {
             return players.findByEmail(new Email(email));
         } catch (InvalidPlayerDataException malformedEmail) {
-            // Un courriel mal formé ne peut correspondre à aucun compte.
             return Optional.empty();
         }
     }
@@ -61,7 +59,6 @@ public class LoginUseCase {
         try {
             return passwordHasher.matches(new RawPassword(password), hash);
         } catch (PasswordTooShortException tooShort) {
-            // Un mot de passe trop court ne peut correspondre à aucun compte.
             return false;
         }
     }

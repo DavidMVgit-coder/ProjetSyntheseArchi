@@ -2,15 +2,12 @@
 
 Projet sur D&D pour architecture logicielle.
 
-# API REST des héros
+API REST développée en Java avec **Jersey (JAX-RS)**. Elle gère des héros, des
+comptes joueurs et des lobbies. Toutes les données sont conservées en mémoire et
+sont perdues lorsque le serveur est arrêté.
 
-Cette API REST, développée en Java avec **Jersey (JAX-RS)**, utilise un stockage en mémoire pour gérer des héros.
-
-Elle permet de créer un héros avec `POST /heroes`, puis de le consulter avec `GET /heroes/{id}`.
-
-Le projet cible Java 21. Utiliser un JDK 21 pour compiler et lancer l'API avec Maven.
-
-Lors de la création d'un héros, l'API retourne le statut HTTP `201 Created`, le héros créé dans le corps de la réponse et son URL dans l'en-tête `Location`.
+Le code est découpé en modules (`hero`, `player`, `lobby`, `item`), chacun
+organisé en couches `domain`, `application`, `infrastructure` et `api`.
 
 ## Prérequis
 
@@ -22,7 +19,7 @@ Ces dépendances sont gérées par Maven.
 
 ## Lancement de l'API
 
-Compiler le projet et exécuter les tests HTTP :
+Compiler le projet et exécuter les tests :
 
 ```bash
 mvn clean verify
@@ -35,7 +32,6 @@ mvn compile exec:java
 ```
 
 Le serveur utilise HTTP/1.1 et écoute sur `http://localhost:8080/`. Utiliser `Ctrl+C` pour l'arrêter.
-Les héros sont conservés en mémoire et sont perdus lorsque le serveur est arrêté.
 Pour un client Java `HttpClient`, sélectionner `HttpClient.Version.HTTP_1_1` ;
 la négociation HTTP/2 n'est pas prise en charge par cette configuration.
 
@@ -49,8 +45,29 @@ projet et pour le lancement des tâches Maven.
 |---|---|---|
 | POST | `/heroes` | Créer un nouveau héros |
 | GET | `/heroes/{id}` | Consulter un héros à partir de son identifiant |
+| POST | `/players` | Créer un compte joueur |
+| POST | `/lobbies` | Créer un lobby (joueur authentifié) |
+| DELETE | `/lobbies/{lobbyId}/players/{playerId}` | Quitter un lobby (joueur authentifié) |
 
-## Exemple de création d'un héros
+## Format des erreurs
+
+Toutes les erreurs ont le même format JSON :
+
+```json
+{
+  "timestamp": "2026-11-26T21:30:36.863Z",
+  "status": 400,
+  "code": "INVALID_REQUEST",
+  "message": "La caractéristique STRENGTH doit être comprise entre 3 et 18 (valeur reçue : 25).",
+  "path": "/heroes"
+}
+```
+
+Un corps JSON mal formé donne `400 INVALID_REQUEST`.
+
+# Héros
+
+## Création d'un héros
 
 **Requête :**
 
@@ -58,8 +75,6 @@ projet et pour le lancement des tâches Maven.
 POST /heroes
 Content-Type: application/json
 ```
-
-**Corps JSON :**
 
 ```json
 {
@@ -83,8 +98,6 @@ Location: http://localhost:8080/heroes/550e8400-e29b-41d4-a716-446655440000
 Content-Type: application/json
 ```
 
-**Exemple de corps de réponse :**
-
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -99,14 +112,23 @@ Content-Type: application/json
 }
 ```
 
-L'identifiant est un UUID généré à la création. Remplacer celui de l'exemple par
-l'identifiant retourné pour consulter le héros créé.
+L'identifiant est un UUID généré à la création.
 
-Les espèces et classes acceptent les noms définis par les enums du domaine,
-sans tenir compte de la casse : `HUMAN`, `ELF`, `DWARF`, `ORC` pour les espèces ;
-`WARRIOR`, `RANGER`, `MAGE`, `CLERIC` pour les classes.
+Règles de validation :
 
-## Exemple de consultation d'un héros
+- le nom contient de 2 à 30 caractères, uniquement des lettres et des espaces
+  simples, sans espace au début ni à la fin ; il doit être unique ;
+- les espèces et classes acceptent les noms des enums du domaine, sans tenir
+  compte de la casse : `HUMAN`, `ELF`, `DWARF`, `ORC` pour les espèces ;
+  `WARRIOR`, `RANGER`, `MAGE`, `CLERIC` pour les classes ;
+- chaque caractéristique est comprise entre 3 et 18 avant le bonus d'espèce.
+
+| Situation | Statut HTTP | Code d'erreur |
+|---|---|---|
+| Donnée absente ou invalide | `400` | `INVALID_REQUEST` |
+| Nom déjà utilisé par un autre héros | `409` | `HERO_ALREADY_EXISTS` |
+
+## Consultation d'un héros
 
 **Requête :**
 
@@ -114,28 +136,66 @@ sans tenir compte de la casse : `HUMAN`, `ELF`, `DWARF`, `ORC` pour les espèces
 GET /heroes/550e8400-e29b-41d4-a716-446655440000
 ```
 
-**Exemple de réponse attendue :**
+**Réponse attendue :** `200 OK` avec le même corps que lors de la création.
 
-```http
-HTTP/1.1 200 OK
-Content-Type: application/json
-```
+| Situation | Statut HTTP | Code d'erreur |
+|---|---|---|
+| Identifiant qui n'est pas un UUID | `400` | `INVALID_REQUEST` |
+| Aucun héros avec cet identifiant | `404` | `HERO_NOT_FOUND` |
+
+# Joueurs
+
+## Création d'un compte
+
+`POST /players` crée un compte sans authentification préalable.
 
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Aria",
-  "species": "ELF",
-  "heroClass": "RANGER",
-  "level": 1,
-  "currentHitPoints": 11,
-  "maxHitPoints": 11,
-  "currentMana": 0,
-  "maxMana": 0
+  "pseudonym": "Aria",
+  "email": "aria@mail.com",
+  "password": "dragon-2026"
 }
 ```
 
-# Création d'un lobby — issue #27
+Réponse `201 Created`, avec l'URL du joueur dans l'en-tête `Location`. Le mot de
+passe n'est jamais renvoyé ; il est stocké haché avec Argon2.
+
+```json
+{
+  "id": "5174e1a0-4b78-3b22-82db-ec7a316e4725",
+  "pseudonym": "Aria",
+  "email": "aria@mail.com"
+}
+```
+
+Règles de validation :
+
+- le pseudonyme contient de 3 à 20 lettres, chiffres ou `_` ;
+- le courriel doit être une adresse valide d'au plus 254 caractères ;
+- le mot de passe contient au moins 8 caractères ;
+- le pseudonyme et le courriel sont uniques, sans tenir compte de la casse.
+
+| Situation | Statut HTTP | Code d'erreur |
+|---|---|---|
+| Donnée absente ou invalide | `400` | `INVALID_REQUEST` |
+| Pseudonyme déjà utilisé | `409` | `PSEUDONYM_TAKEN` |
+| Courriel déjà utilisé | `409` | `EMAIL_TAKEN` |
+| Mot de passe trop court | `422` | `PASSWORD_TOO_SHORT` |
+
+## Connexion
+
+La ressource `SessionResource` (`POST /sessions`) et le cas d'utilisation
+`LoginUseCase` existent, mais ne sont pas encore branchés dans
+`ApiConfiguration` : il manque une implémentation de `TokenService`. Tant que ce
+n'est pas fait, `POST /sessions` répond `404`.
+
+Les erreurs de connexion sont déjà traduites par le gestionnaire d'erreurs :
+`401 INVALID_CREDENTIALS` pour des identifiants invalides et
+`400 INVALID_REQUEST` pour un courriel ou un mot de passe manquant.
+
+# Lobbies
+
+## Création d'un lobby
 
 `POST /lobbies` crée un lobby pour le joueur authentifié. Aucun corps de requête
 n'est nécessaire : l'identité de l'hôte vient du contexte d'authentification du
@@ -144,7 +204,6 @@ serveur. Les identifiants de joueurs sont distincts des identifiants de héros.
 Le créateur devient l'hôte et l'unique membre du lobby. Le lobby est `OPEN`, sa
 capacité est de 4 joueurs et il reste 3 places. Un joueur déjà membre d'un lobby
 `OPEN` ne peut pas en créer un autre, même avec deux requêtes simultanées.
-Les lobbies sont conservés en mémoire et disparaissent à l'arrêt du serveur.
 
 Exemple de réponse à une création authentifiée (`201 Created`) :
 
@@ -164,19 +223,29 @@ Exemple de réponse à une création authentifiée (`201 Created`) :
 | Identité authentifiée absente ou inexploitable | `401` | `AUTHENTICATION_REQUIRED` |
 | Joueur déjà membre d'un lobby ouvert | `409` | `PLAYER_ALREADY_IN_OPEN_LOBBY` |
 
+## Quitter un lobby
+
+`DELETE /lobbies/{lobbyId}/players/{playerId}` retire le joueur du lobby et
+répond `204 No Content`. Un joueur ne peut retirer que lui-même.
+
+Si l'hôte quitte le lobby, le membre suivant devient l'hôte. Quand le dernier
+membre part, le lobby passe à `CLOSED`.
+
+| Situation | Statut HTTP | Code d'erreur |
+|---|---|---|
+| Identité authentifiée absente ou inexploitable | `401` | `AUTHENTICATION_REQUIRED` |
+| Tentative de retirer un autre joueur | `403` | `FORBIDDEN` |
+| Lobby inexistant | `404` | `LOBBY_NOT_FOUND` |
+| Joueur qui n'est pas membre du lobby | `404` | `PLAYER_NOT_IN_LOBBY` |
+| Partie déjà commencée | `409` | `GAME_ALREADY_STARTED` |
+
 ## Raccordement à l'authentification
 
-L'authentification est développée séparément. Son filtre Jersey devra valider
-les identifiants de connexion puis installer un `SecurityContext` dont
-`getUserPrincipal().getName()` contient l'UUID du joueur connecté.
-La création de lobby utilise uniquement cette identité vérifiée ; fournir un
+Les routes des lobbies exigent une identité vérifiée. Un filtre Jersey devra
+valider le jeton de connexion puis installer un `SecurityContext` dont
+`getUserPrincipal().getName()` contient l'UUID du joueur connecté. Fournir un
 `playerId` dans le JSON ou dans un en-tête ne suffit pas à s'authentifier.
 
-Tant que ce filtre n'est pas branché, le serveur refuse `POST /lobbies` avec
-`401`. Les tests HTTP utilisent un filtre réservé aux tests pour exercer les
-cas authentifiés. Le parcours de connexion réel reste à valider lors de son
-intégration. La consultation et la participation à un lobby ne font pas partie
-de cette issue.
-
-Les tests du domaine, de la création, du stockage et de l'API s'exécutent avec
-`mvn clean verify` sous Java 21, en même temps que les tests des héros.
+Tant que ce filtre n'est pas branché, le serveur refuse les routes des lobbies
+avec `401`. Les tests HTTP utilisent un filtre réservé aux tests pour exercer les
+cas authentifiés.

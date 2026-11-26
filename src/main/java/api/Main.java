@@ -19,7 +19,7 @@ public class Main {
         URI baseUri = URI.create("http://localhost:8080/");
         HttpServer server = startServer(baseUri);
         Runtime.getRuntime().addShutdownHook(new Thread(server::shutdownNow, "api-shutdown"));
-        System.out.println("API des héros disponible sur " + baseUri + "heroes");
+        System.out.println("API disponible sur " + baseUri);
 
         try {
             new CountDownLatch(1).await();
@@ -28,4 +28,3 @@ public class Main {
         }
     }
 }
-

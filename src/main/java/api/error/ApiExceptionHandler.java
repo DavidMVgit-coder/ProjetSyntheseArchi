@@ -20,6 +20,8 @@ import lobby.application.LobbyNotFoundException;
 import lobby.domain.exception.GameAlreadyStartedException;
 import lobby.domain.exception.PlayerAlreadyInOpenLobbyException;
 import lobby.domain.exception.PlayerNotInLobbyException;
+import player.application.login.InvalidCredentialsException;
+import player.application.login.InvalidLoginInputException;
 import player.domain.exception.EmailAlreadyTakenException;
 import player.domain.exception.InvalidPlayerDataException;
 import player.domain.exception.PasswordTooShortException;
@@ -79,6 +81,12 @@ public class ApiExceptionHandler implements ExceptionMapper<Exception> {
         }
         if (exception instanceof EmailAlreadyTakenException) {
             return error(Response.Status.CONFLICT, "EMAIL_TAKEN", exception.getMessage());
+        }
+        if (exception instanceof InvalidCredentialsException) {
+            return error(Response.Status.UNAUTHORIZED, "INVALID_CREDENTIALS", exception.getMessage());
+        }
+        if (exception instanceof InvalidLoginInputException) {
+            return error(Response.Status.BAD_REQUEST, "INVALID_REQUEST", exception.getMessage());
         }
         if (exception instanceof PasswordTooShortException) {
             return error(UNPROCESSABLE_ENTITY, "PASSWORD_TOO_SHORT", exception.getMessage());

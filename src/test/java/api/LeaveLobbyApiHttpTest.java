@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 class LeaveLobbyApiHttpTest {
 
     private static final ObjectMapper JSON = new ObjectMapper();
@@ -93,7 +92,6 @@ class LeaveLobbyApiHttpTest {
 
         assertEquals(401, response.statusCode());
     }
-
 
     private String createLobby(String token) throws Exception {
         HttpResponse<String> response = post("/lobbies", token);

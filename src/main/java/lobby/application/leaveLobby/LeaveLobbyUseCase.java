@@ -8,7 +8,6 @@ import lobby.domain.Lobby;
 import java.util.Objects;
 import java.util.UUID;
 
-
 public class LeaveLobbyUseCase {
 
     private final LobbyRepository repository;

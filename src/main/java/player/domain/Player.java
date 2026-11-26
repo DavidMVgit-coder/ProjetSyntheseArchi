@@ -3,7 +3,6 @@ package player.domain;
 import java.util.Objects;
 import java.util.UUID;
 
-
 public final class Player {
 
     private final UUID id;

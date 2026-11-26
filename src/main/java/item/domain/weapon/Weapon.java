@@ -25,9 +25,4 @@ public class Weapon extends Item implements Equipment {
         Objects.requireNonNull(heroClass, "La classe du héros est requise.");
         return true;
     }
-
-    
-
-    
-
 }

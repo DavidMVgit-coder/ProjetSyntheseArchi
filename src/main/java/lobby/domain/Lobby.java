@@ -32,7 +32,6 @@ public final class Lobby {
         memberIds.add(playerId);
     }
 
-    
     public void leave(UUID playerId) {
         if (!memberIds.contains(playerId)) {
             throw new PlayerNotInLobbyException(playerId);

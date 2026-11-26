@@ -3,8 +3,6 @@ package hero.domain;
 import java.util.Map;
 import java.util.Objects;
 
-
-
 public final class HeroFactory {
 
     private HeroFactory() {

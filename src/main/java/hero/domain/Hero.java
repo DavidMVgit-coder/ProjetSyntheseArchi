@@ -14,7 +14,6 @@ public class Hero {
     private ManaPoints manaPoints;
     private Progression progression;
 
-
     public Hero(HeroName name, Species species, HeroClass heroClass, CharacteristicSet characteristics,
                 HealthPoints healthPoints, ManaPoints manaPoints, Progression progression)
     {
@@ -27,7 +26,6 @@ public class Hero {
         this.manaPoints = Objects.requireNonNull(manaPoints);
         this.progression = Objects.requireNonNull(progression);
     }
-
 
     public void takeDamage(int damage) {
         healthPoints = healthPoints.takeDamage(damage);
@@ -72,7 +70,6 @@ public class Hero {
         return Math.max(1, (heroClass.getBaseHp() / 2) + constitutionModifier);
     }
 
-
     public UUID getHeroId() {
         return heroId;
     }
@@ -111,4 +108,3 @@ public class Hero {
                 + healthPoints + ", " + manaPoints;
     }
 }
-

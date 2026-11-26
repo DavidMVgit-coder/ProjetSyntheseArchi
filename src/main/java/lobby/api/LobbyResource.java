@@ -36,7 +36,6 @@ public class LobbyResource {
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
-    
     @DELETE
     @Path("/{lobbyId}/players/{playerId}")
     public Response leave(@PathParam("lobbyId") UUID lobbyId,

@@ -22,7 +22,4 @@ public class Item implements InventoryItem {
     public String toString() {
         return "Item [nom=" + name + "]";
     }
-
-    
-
 }

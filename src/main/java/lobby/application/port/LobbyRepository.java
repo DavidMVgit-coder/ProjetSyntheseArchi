@@ -12,4 +12,6 @@ public interface LobbyRepository {
     Optional<Lobby> findById(UUID id);
 
     void save(Lobby lobby);
+
+    boolean existsOpenLobbyWithMember(UUID playerId);
 }

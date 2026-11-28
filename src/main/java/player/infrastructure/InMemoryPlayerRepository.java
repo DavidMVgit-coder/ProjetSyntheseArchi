@@ -34,6 +34,11 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     }
 
     @Override
+    public synchronized Optional<Player> findById(UUID id) {
+        return Optional.ofNullable(players.get(id));
+    }
+
+    @Override
     public synchronized Optional<Player> findByEmail(Email email) {
         return Optional.ofNullable(playersByEmail.get(email));
     }

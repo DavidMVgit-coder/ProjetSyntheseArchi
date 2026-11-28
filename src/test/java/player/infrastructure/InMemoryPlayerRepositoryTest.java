@@ -9,8 +9,12 @@ import player.domain.Pseudonym;
 import player.domain.exception.EmailAlreadyTakenException;
 import player.domain.exception.PseudonymAlreadyTakenException;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InMemoryPlayerRepositoryTest {
 
@@ -48,5 +52,18 @@ class InMemoryPlayerRepositoryTest {
         repository.create(player("Aria", "aria@mail.com"));
 
         assertDoesNotThrow(() -> repository.create(player("Bram", "bram@mail.com")));
+    }
+
+    @Test
+    void findsAPlayerByItsId() {
+        Player aria = player("Aria", "aria@mail.com");
+        repository.create(aria);
+
+        assertEquals(aria, repository.findById(aria.getId()).orElseThrow());
+    }
+
+    @Test
+    void returnsEmptyForAnUnknownId() {
+        assertTrue(repository.findById(UUID.randomUUID()).isEmpty());
     }
 }

@@ -17,6 +17,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import player.api.PlayerResource;
 import player.application.createPlayer.CreatePlayerUseCase;
+import player.application.getPlayerProfile.GetPlayerProfileUseCase;
 import player.application.port.PasswordHasher;
 import player.application.port.PlayerRepository;
 import player.infrastructure.Argon2PasswordHasher;
@@ -39,6 +40,7 @@ public class ApiConfiguration extends ResourceConfig {
                 bind(new CreateLobbyUseCase(lobbyRepository)).to(CreateLobbyUseCase.class);
                 bind(new LeaveLobbyUseCase(lobbyRepository)).to(LeaveLobbyUseCase.class);
                 bind(new CreatePlayerUseCase(playerRepository, passwordHasher)).to(CreatePlayerUseCase.class);
+                bind(new GetPlayerProfileUseCase(playerRepository)).to(GetPlayerProfileUseCase.class);
             }
         });
 

@@ -1,5 +1,6 @@
 package api.error;
 
+import api.security.AuthenticationRequiredException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import hero.application.InvalidHeroInputException;
 import hero.application.getHero.HeroNotFoundException;
@@ -14,12 +15,13 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import lobby.api.AuthenticationRequiredException;
 import lobby.application.ForbiddenActionException;
 import lobby.application.LobbyNotFoundException;
 import lobby.domain.exception.GameAlreadyStartedException;
 import lobby.domain.exception.PlayerAlreadyInOpenLobbyException;
 import lobby.domain.exception.PlayerNotInLobbyException;
+import player.application.PlayerNotFoundException;
+import player.application.getPlayerProfile.ProfileAccessForbiddenException;
 import player.application.login.InvalidCredentialsException;
 import player.application.login.InvalidLoginInputException;
 import player.domain.exception.EmailAlreadyTakenException;
@@ -58,7 +60,8 @@ public class ApiExceptionHandler implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
-        if (exception instanceof AuthenticationRequiredException) {
+        if (exception instanceof AuthenticationRequiredException
+                || exception instanceof lobby.api.AuthenticationRequiredException) {
             return error(Response.Status.UNAUTHORIZED, "AUTHENTICATION_REQUIRED", exception.getMessage());
         }
         if (exception instanceof PlayerAlreadyInOpenLobbyException) {
@@ -81,6 +84,12 @@ public class ApiExceptionHandler implements ExceptionMapper<Exception> {
         }
         if (exception instanceof EmailAlreadyTakenException) {
             return error(Response.Status.CONFLICT, "EMAIL_TAKEN", exception.getMessage());
+        }
+        if (exception instanceof ProfileAccessForbiddenException) {
+            return error(Response.Status.FORBIDDEN, "FORBIDDEN", exception.getMessage());
+        }
+        if (exception instanceof PlayerNotFoundException) {
+            return error(Response.Status.NOT_FOUND, "PLAYER_NOT_FOUND", exception.getMessage());
         }
         if (exception instanceof InvalidCredentialsException) {
             return error(Response.Status.UNAUTHORIZED, "INVALID_CREDENTIALS", exception.getMessage());

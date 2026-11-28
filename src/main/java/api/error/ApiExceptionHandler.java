@@ -17,6 +17,8 @@ import jakarta.ws.rs.ext.Provider;
 import lobby.api.AuthenticationRequiredException;
 import lobby.application.ForbiddenActionException;
 import lobby.application.LobbyNotFoundException;
+import lobby.application.selectHero.HeroInGameException;
+import lobby.application.selectHero.UnknownHeroException;
 import lobby.domain.exception.GameAlreadyStartedException;
 import lobby.domain.exception.PlayerAlreadyInOpenLobbyException;
 import lobby.domain.exception.PlayerNotInLobbyException;
@@ -72,6 +74,12 @@ public class ApiExceptionHandler implements ExceptionMapper<Exception> {
         }
         if (exception instanceof ForbiddenActionException) {
             return error(Response.Status.FORBIDDEN, "FORBIDDEN", exception.getMessage());
+        }
+        if (exception instanceof UnknownHeroException) {
+            return error(Response.Status.NOT_FOUND, "HERO_NOT_FOUND", exception.getMessage());
+        }
+        if (exception instanceof HeroInGameException) {
+            return error(Response.Status.CONFLICT, "HERO_IN_GAME", exception.getMessage());
         }
         if (exception instanceof GameAlreadyStartedException) {
             return error(Response.Status.CONFLICT, "GAME_ALREADY_STARTED", exception.getMessage());

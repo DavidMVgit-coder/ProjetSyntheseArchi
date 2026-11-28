@@ -4,6 +4,7 @@ import lobby.domain.exception.PlayerNotInLobbyException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -135,5 +136,58 @@ class LobbyTest {
 
         assertThrows(PlayerNotInLobbyException.class, () -> lobby.leave(bram));
         assertFalse(lobby.getMemberIds().contains(bram));
+    }
+
+    @Test
+    void aMemberCanSelectAHero() {
+        UUID host = UUID.randomUUID();
+        UUID heroId = UUID.randomUUID();
+        Lobby lobby = new Lobby(host);
+
+        lobby.selectHero(host, heroId);
+
+        assertEquals(Optional.of(heroId), lobby.getSelectedHeroId(host));
+    }
+
+    @Test
+    void aNewSelectionReplacesThePreviousOne() {
+        UUID host = UUID.randomUUID();
+        UUID firstHero = UUID.randomUUID();
+        UUID secondHero = UUID.randomUUID();
+        Lobby lobby = new Lobby(host);
+        lobby.selectHero(host, firstHero);
+
+        lobby.selectHero(host, secondHero);
+
+        assertEquals(Optional.of(secondHero), lobby.getSelectedHeroId(host));
+    }
+
+    @Test
+    void aMemberWithoutSelectionHasNoHero() {
+        UUID host = UUID.randomUUID();
+        Lobby lobby = new Lobby(host);
+
+        assertEquals(Optional.empty(), lobby.getSelectedHeroId(host));
+    }
+
+    @Test
+    void aPlayerWhoIsNotAMemberCannotSelectAHero() {
+        Lobby lobby = new Lobby(UUID.randomUUID());
+
+        assertThrows(PlayerNotInLobbyException.class,
+                () -> lobby.selectHero(UUID.randomUUID(), UUID.randomUUID()));
+    }
+
+    @Test
+    void leavingTheLobbyRemovesTheSelectedHero() {
+        UUID host = UUID.randomUUID();
+        UUID bram = UUID.randomUUID();
+        Lobby lobby = new Lobby(host);
+        lobby.join(bram);
+        lobby.selectHero(bram, UUID.randomUUID());
+
+        lobby.leave(bram);
+
+        assertEquals(Optional.empty(), lobby.getSelectedHeroId(bram));
     }
 }

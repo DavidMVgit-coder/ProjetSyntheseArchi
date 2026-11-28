@@ -9,7 +9,12 @@ import hero.infrastructure.InMemoryHeroRepository;
 import lobby.api.LobbyResource;
 import lobby.application.createLobby.CreateLobbyUseCase;
 import lobby.application.leaveLobby.LeaveLobbyUseCase;
+import lobby.application.port.ActiveGames;
+import lobby.application.port.HeroCatalog;
 import lobby.application.port.LobbyRepository;
+import lobby.application.selectHero.SelectHeroUseCase;
+import lobby.infrastructure.InMemoryActiveGames;
+import lobby.infrastructure.InMemoryHeroCatalog;
 import lobby.infrastructure.InMemoryLobbyRepository;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -25,6 +30,10 @@ import player.infrastructure.InMemoryPlayerRepository;
 public class ApiConfiguration extends ResourceConfig {
 
     public ApiConfiguration() {
+        this(new InMemoryHeroCatalog(), new InMemoryActiveGames());
+    }
+
+    public ApiConfiguration(HeroCatalog heroCatalog, ActiveGames activeGames) {
         property(ServerProperties.WADL_FEATURE_DISABLE, true);
         HeroRepository repository = new InMemoryHeroRepository();
         LobbyRepository lobbyRepository = new InMemoryLobbyRepository();
@@ -38,6 +47,7 @@ public class ApiConfiguration extends ResourceConfig {
                 bind(new GetHeroUseCase(repository)).to(GetHeroUseCase.class);
                 bind(new CreateLobbyUseCase(lobbyRepository)).to(CreateLobbyUseCase.class);
                 bind(new LeaveLobbyUseCase(lobbyRepository)).to(LeaveLobbyUseCase.class);
+                bind(new SelectHeroUseCase(lobbyRepository, heroCatalog, activeGames)).to(SelectHeroUseCase.class);
                 bind(new CreatePlayerUseCase(playerRepository, passwordHasher)).to(CreatePlayerUseCase.class);
             }
         });

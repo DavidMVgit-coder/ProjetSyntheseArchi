@@ -4,8 +4,11 @@ import lobby.domain.exception.GameAlreadyStartedException;
 import lobby.domain.exception.PlayerNotInLobbyException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public final class Lobby {
@@ -15,6 +18,7 @@ public final class Lobby {
     private final UUID id;
     private UUID hostId;
     private final List<UUID> memberIds = new ArrayList<>();
+    private final Map<UUID, UUID> selectedHeroIds = new HashMap<>();
     private LobbyStatus status;
 
     public Lobby(UUID hostId) {
@@ -42,6 +46,7 @@ public final class Lobby {
         }
 
         memberIds.remove(playerId);
+        selectedHeroIds.remove(playerId);
 
         if (memberIds.isEmpty()) {
             status = LobbyStatus.CLOSED;
@@ -51,6 +56,23 @@ public final class Lobby {
         if (playerId.equals(hostId)) {
             hostId = memberIds.get(0);
         }
+    }
+
+    public void selectHero(UUID playerId, UUID heroId) {
+        Objects.requireNonNull(heroId, "L'identifiant du héros est obligatoire.");
+        if (!memberIds.contains(playerId)) {
+            throw new PlayerNotInLobbyException(playerId);
+        }
+
+        if (status == LobbyStatus.STARTED) {
+            throw new GameAlreadyStartedException();
+        }
+
+        selectedHeroIds.put(playerId, heroId);
+    }
+
+    public Optional<UUID> getSelectedHeroId(UUID playerId) {
+        return Optional.ofNullable(selectedHeroIds.get(playerId));
     }
 
     public UUID getId() {

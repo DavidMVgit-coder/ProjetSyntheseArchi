@@ -1,8 +1,11 @@
 package lobby.api;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -12,6 +15,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import lobby.application.createLobby.CreateLobbyUseCase;
 import lobby.application.leaveLobby.LeaveLobbyUseCase;
+import lobby.application.selectHero.SelectHeroUseCase;
 
 import java.security.Principal;
 import java.util.UUID;
@@ -22,11 +26,14 @@ public class LobbyResource {
 
     private final CreateLobbyUseCase createLobbyUseCase;
     private final LeaveLobbyUseCase leaveLobbyUseCase;
+    private final SelectHeroUseCase selectHeroUseCase;
 
     @Inject
-    public LobbyResource(CreateLobbyUseCase createLobbyUseCase, LeaveLobbyUseCase leaveLobbyUseCase) {
+    public LobbyResource(CreateLobbyUseCase createLobbyUseCase, LeaveLobbyUseCase leaveLobbyUseCase,
+            SelectHeroUseCase selectHeroUseCase) {
         this.createLobbyUseCase = createLobbyUseCase;
         this.leaveLobbyUseCase = leaveLobbyUseCase;
+        this.selectHeroUseCase = selectHeroUseCase;
     }
 
     @POST
@@ -44,6 +51,22 @@ public class LobbyResource {
         UUID authenticatedPlayerId = authenticatedPlayerId(securityContext);
         leaveLobbyUseCase.execute(lobbyId, playerId, authenticatedPlayerId);
         return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("/{lobbyId}/players/{playerId}/hero")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public SelectHeroResponse selectHero(@PathParam("lobbyId") UUID lobbyId,
+            @PathParam("playerId") UUID playerId,
+            SelectHeroRequest request,
+            @Context SecurityContext securityContext) {
+        UUID authenticatedPlayerId = authenticatedPlayerId(securityContext);
+        if (request == null || request.heroId() == null) {
+            throw new BadRequestException("Le champ heroId est obligatoire.");
+        }
+
+        return SelectHeroResponse.from(
+                selectHeroUseCase.execute(lobbyId, playerId, request.heroId(), authenticatedPlayerId));
     }
 
     private UUID authenticatedPlayerId(SecurityContext securityContext) {

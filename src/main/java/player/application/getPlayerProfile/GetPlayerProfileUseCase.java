@@ -18,17 +18,13 @@ public class GetPlayerProfileUseCase {
     public PlayerProfileOutput execute(String requestedPlayerId, UUID authenticatedPlayerId) {
         Objects.requireNonNull(authenticatedPlayerId, "Le joueur authentifié est obligatoire.");
 
-        // 1. Un joueur ne peut consulter que son propre profil (vérifié avant l'existence :
-        //    on ne révèle pas si le profil d'un autre joueur existe).
         if (!isOwnProfile(requestedPlayerId, authenticatedPlayerId)) {
             throw new ProfileAccessForbiddenException();
         }
 
-        // 2. Le joueur authentifié doit exister.
         Player player = repository.findById(authenticatedPlayerId)
                 .orElseThrow(() -> new PlayerNotFoundException(authenticatedPlayerId));
 
-        // 3. Seuls l'identifiant, le pseudonyme et le courriel sont renvoyés.
         return new PlayerProfileOutput(
                 player.getId(),
                 player.getPseudonym().getValue(),

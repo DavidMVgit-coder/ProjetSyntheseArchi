@@ -24,7 +24,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-/** Story J3 — Consulter son profil : GET /players/{playerId}. */
 class PlayerProfileApiHttpTest {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(10);
@@ -156,10 +155,6 @@ class PlayerProfileApiHttpTest {
         assertFalse(error.path("message").asText().isBlank());
     }
 
-    /**
-     * Simule, dans les tests seulement, le futur filtre d'authentification (J2) :
-     * le jeton « Bearer <uuid> » identifie directement le joueur.
-     */
     @Priority(Priorities.AUTHENTICATION)
     private static final class TestAuthenticationFilter implements ContainerRequestFilter {
 

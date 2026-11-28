@@ -60,8 +60,7 @@ public class ApiExceptionHandler implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception exception) {
-        if (exception instanceof AuthenticationRequiredException
-                || exception instanceof lobby.api.AuthenticationRequiredException) {
+        if (exception instanceof AuthenticationRequiredException) {
             return error(Response.Status.UNAUTHORIZED, "AUTHENTICATION_REQUIRED", exception.getMessage());
         }
         if (exception instanceof PlayerAlreadyInOpenLobbyException) {

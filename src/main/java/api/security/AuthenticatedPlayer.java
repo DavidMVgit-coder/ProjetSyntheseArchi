@@ -5,10 +5,6 @@ import jakarta.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.UUID;
 
-/**
- * Lit l'identité du joueur connecté installée par le filtre d'authentification.
- * Le principal doit contenir l'UUID du joueur ; sinon la requête est refusée (401).
- */
 public final class AuthenticatedPlayer {
 
     private AuthenticatedPlayer() {

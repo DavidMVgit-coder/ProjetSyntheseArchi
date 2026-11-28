@@ -1,5 +1,6 @@
 package lobby.api;
 
+import api.security.AuthenticatedPlayer;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
@@ -13,7 +14,6 @@ import jakarta.ws.rs.core.SecurityContext;
 import lobby.application.createLobby.CreateLobbyUseCase;
 import lobby.application.leaveLobby.LeaveLobbyUseCase;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @Path("/lobbies")
@@ -31,7 +31,7 @@ public class LobbyResource {
 
     @POST
     public Response create(@Context SecurityContext securityContext) {
-        UUID playerId = authenticatedPlayerId(securityContext);
+        UUID playerId = AuthenticatedPlayer.idFrom(securityContext);
         LobbyResponse response = LobbyResponse.from(createLobbyUseCase.execute(playerId));
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
@@ -41,26 +41,8 @@ public class LobbyResource {
     public Response leave(@PathParam("lobbyId") UUID lobbyId,
             @PathParam("playerId") UUID playerId,
             @Context SecurityContext securityContext) {
-        UUID authenticatedPlayerId = authenticatedPlayerId(securityContext);
+        UUID authenticatedPlayerId = AuthenticatedPlayer.idFrom(securityContext);
         leaveLobbyUseCase.execute(lobbyId, playerId, authenticatedPlayerId);
         return Response.noContent().build();
-    }
-
-    private UUID authenticatedPlayerId(SecurityContext securityContext) {
-        Principal principal = securityContext == null ? null : securityContext.getUserPrincipal();
-        if (principal == null || principal.getName() == null) {
-            throw new AuthenticationRequiredException();
-        }
-
-        String name = principal.getName();
-        try {
-            UUID playerId = UUID.fromString(name);
-            if (!playerId.toString().equalsIgnoreCase(name)) {
-                throw new AuthenticationRequiredException();
-            }
-            return playerId;
-        } catch (IllegalArgumentException exception) {
-            throw new AuthenticationRequiredException();
-        }
     }
 }

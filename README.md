@@ -46,6 +46,7 @@ projet et pour le lancement des tâches Maven.
 | POST | `/heroes` | Créer un nouveau héros |
 | GET | `/heroes/{id}` | Consulter un héros à partir de son identifiant |
 | POST | `/players` | Créer un compte joueur |
+| GET | `/players/{playerId}` | Consulter son propre profil (joueur authentifié) |
 | POST | `/lobbies` | Créer un lobby (joueur authentifié) |
 | DELETE | `/lobbies/{lobbyId}/players/{playerId}` | Quitter un lobby (joueur authentifié) |
 
@@ -182,6 +183,32 @@ Règles de validation :
 | Courriel déjà utilisé | `409` | `EMAIL_TAKEN` |
 | Mot de passe trop court | `422` | `PASSWORD_TOO_SHORT` |
 
+## Consultation du profil
+
+`GET /players/{playerId}` renvoie le profil du joueur connecté. Aucun corps de
+requête : l'identité vient du contexte d'authentification (voir
+« Raccordement à l'authentification »).
+
+Réponse `200 OK`. Le mot de passe et son hachage ne sont jamais renvoyés.
+
+```json
+{
+  "id": "5174e1a0-4b78-3b22-82db-ec7a316e4725",
+  "pseudonym": "Aria",
+  "email": "aria@mail.com"
+}
+```
+
+Un joueur ne peut consulter que son propre profil. Demander un autre
+identifiant donne toujours `403`, que ce joueur existe ou non : la route ne
+révèle pas l'existence des autres comptes.
+
+| Situation | Statut HTTP | Code d'erreur |
+|---|---|---|
+| Joueur non authentifié | `401` | `AUTHENTICATION_REQUIRED` |
+| Profil d'un autre joueur | `403` | `FORBIDDEN` |
+| Joueur authentifié sans compte | `404` | `PLAYER_NOT_FOUND` |
+
 ## Connexion
 
 La ressource `SessionResource` (`POST /sessions`) et le cas d'utilisation
@@ -241,11 +268,10 @@ membre part, le lobby passe à `CLOSED`.
 
 ## Raccordement à l'authentification
 
-Les routes des lobbies exigent une identité vérifiée. Un filtre Jersey devra
+Les routes des lobbies et `GET /players/{playerId}` exigent une identité vérifiée. Un filtre Jersey devra
 valider le jeton de connexion puis installer un `SecurityContext` dont
 `getUserPrincipal().getName()` contient l'UUID du joueur connecté. Fournir un
 `playerId` dans le JSON ou dans un en-tête ne suffit pas à s'authentifier.
 
-Tant que ce filtre n'est pas branché, le serveur refuse les routes des lobbies
-avec `401`. Les tests HTTP utilisent un filtre réservé aux tests pour exercer les
+Tant que ce filtre n'est pas branché, le serveur refuse ces routes avec `401`. Les tests HTTP utilisent un filtre réservé aux tests pour exercer les
 cas authentifiés.

@@ -5,7 +5,6 @@ import player.domain.exception.InvalidPlayerDataException;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-
 public final class Pseudonym {
 
     private static final Pattern FORMAT = Pattern.compile("[\\p{L}0-9_]{3,20}");

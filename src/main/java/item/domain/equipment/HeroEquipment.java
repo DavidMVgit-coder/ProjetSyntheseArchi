@@ -22,7 +22,6 @@ public class HeroEquipment {
         this.inventory = Objects.requireNonNull(inventory, "L'inventaire est requis");
     }
 
-
     public void equipWeapon(Weapon weapon) {
         validatePossession(weapon);
         validateClassRestriction(weapon);

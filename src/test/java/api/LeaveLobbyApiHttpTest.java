@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 class LeaveLobbyApiHttpTest {
 
     private static final ObjectMapper JSON = new ObjectMapper();
@@ -57,7 +56,6 @@ class LeaveLobbyApiHttpTest {
         HttpResponse<String> response = leave(lobbyId, ALICE, "alice");
 
         assertEquals(204, response.statusCode());
-        // Alice n'est plus dans un lobby ouvert : elle peut en créer un autre.
         assertEquals(201, post("/lobbies", "alice").statusCode());
     }
 
@@ -94,7 +92,6 @@ class LeaveLobbyApiHttpTest {
 
         assertEquals(401, response.statusCode());
     }
-
 
     private String createLobby(String token) throws Exception {
         HttpResponse<String> response = post("/lobbies", token);

@@ -3,7 +3,6 @@ package player.domain;
 import player.domain.exception.InvalidPlayerDataException;
 import player.domain.exception.PasswordTooShortException;
 
-
 public final class RawPassword {
 
     public static final int MIN_LENGTH = 8;

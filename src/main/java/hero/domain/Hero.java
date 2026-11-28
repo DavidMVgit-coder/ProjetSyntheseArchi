@@ -10,10 +10,9 @@ public class Hero {
     private final Species species;
     private final HeroClass heroClass;
     private final CharacteristicSet characteristics;
-    private final HealthPoints healthPoints;
-    private final ManaPoints manaPoints;
-    private final Progression progression;
-
+    private HealthPoints healthPoints;
+    private ManaPoints manaPoints;
+    private Progression progression;
 
     public Hero(HeroName name, Species species, HeroClass heroClass, CharacteristicSet characteristics,
                 HealthPoints healthPoints, ManaPoints manaPoints, Progression progression)
@@ -28,13 +27,12 @@ public class Hero {
         this.progression = Objects.requireNonNull(progression);
     }
 
-
     public void takeDamage(int damage) {
-        healthPoints.takeDamage(damage);
+        healthPoints = healthPoints.takeDamage(damage);
     }
 
     public void heal(int amount) {
-        healthPoints.heal(amount);
+        healthPoints = healthPoints.heal(amount);
     }
 
     public boolean isUnconscious() {
@@ -46,24 +44,24 @@ public class Hero {
     }
 
     public void consumeMana(int manaCost) {
-        manaPoints.consume(manaCost);
+        manaPoints = manaPoints.consume(manaCost);
     }
 
     public void regenerateMana(int amount) {
-        manaPoints.regenerate(amount);
+        manaPoints = manaPoints.regenerate(amount);
     }
 
     public void rest() {
-        healthPoints.restoreFully();
-        manaPoints.restoreFully();
+        healthPoints = healthPoints.restoreFully();
+        manaPoints = manaPoints.restoreFully();
     }
 
     public void gainExperience(int experiencePoints) {
-        int levelsGained = progression.gainExperience(experiencePoints);
+        Progression previous = progression;
+        progression = progression.gainExperience(experiencePoints);
+        int levelsGained = progression.getLevel() - previous.getLevel();
 
-        for (int i = 0; i < levelsGained; i++) {
-            healthPoints.increaseMaximum(calculateHpGainPerLevel());
-        }
+        healthPoints = healthPoints.increaseMaximum(levelsGained * calculateHpGainPerLevel());
     }
 
     private int calculateHpGainPerLevel() {
@@ -71,7 +69,6 @@ public class Hero {
 
         return Math.max(1, (heroClass.getBaseHp() / 2) + constitutionModifier);
     }
-
 
     public UUID getHeroId() {
         return heroId;
@@ -111,4 +108,3 @@ public class Hero {
                 + healthPoints + ", " + manaPoints;
     }
 }
-

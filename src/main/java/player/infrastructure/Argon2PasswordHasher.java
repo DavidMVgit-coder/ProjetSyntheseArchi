@@ -7,7 +7,6 @@ import player.application.port.PasswordHasher;
 import player.domain.PasswordHash;
 import player.domain.RawPassword;
 
-
 public class Argon2PasswordHasher implements PasswordHasher {
 
     private static final Argon2Function ARGON2 = Argon2Function.getInstance(19 * 1024, 2, 1, 32, Argon2.ID);

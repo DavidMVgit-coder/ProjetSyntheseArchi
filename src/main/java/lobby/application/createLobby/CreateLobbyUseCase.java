@@ -2,6 +2,7 @@ package lobby.application.createLobby;
 
 import lobby.application.port.LobbyRepository;
 import lobby.domain.Lobby;
+import lobby.domain.exception.PlayerAlreadyInOpenLobbyException;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -14,7 +15,13 @@ public class CreateLobbyUseCase {
         this.repository = Objects.requireNonNull(repository);
     }
 
-    public CreateLobbyOutput execute(UUID authenticatedPlayerId) {
+    public synchronized CreateLobbyOutput execute(UUID authenticatedPlayerId) {
+        Objects.requireNonNull(authenticatedPlayerId, "L'identifiant de l'hôte est obligatoire.");
+
+        if (repository.existsOpenLobbyWithMember(authenticatedPlayerId)) {
+            throw new PlayerAlreadyInOpenLobbyException(authenticatedPlayerId);
+        }
+
         Lobby lobby = new Lobby(authenticatedPlayerId);
         repository.create(lobby);
 

@@ -3,7 +3,6 @@ package lobby.infrastructure;
 import lobby.application.port.LobbyRepository;
 import lobby.domain.Lobby;
 import lobby.domain.LobbyStatus;
-import lobby.domain.exception.PlayerAlreadyInOpenLobbyException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +15,6 @@ public class InMemoryLobbyRepository implements LobbyRepository {
 
     @Override
     public synchronized void create(Lobby lobby) {
-        UUID playerId = lobby.getHostId();
-        for (Lobby existingLobby : lobbies.values()) {
-            if (existingLobby.getStatus() == LobbyStatus.OPEN
-                    && existingLobby.getMemberIds().contains(playerId)) {
-                throw new PlayerAlreadyInOpenLobbyException(playerId);
-            }
-        }
-
         lobbies.put(lobby.getId(), lobby);
     }
 
@@ -35,5 +26,12 @@ public class InMemoryLobbyRepository implements LobbyRepository {
     @Override
     public synchronized void save(Lobby lobby) {
         lobbies.put(lobby.getId(), lobby);
+    }
+
+    @Override
+    public synchronized boolean existsOpenLobbyWithMember(UUID playerId) {
+        return lobbies.values().stream()
+                .anyMatch(lobby -> lobby.getStatus() == LobbyStatus.OPEN
+                        && lobby.getMemberIds().contains(playerId));
     }
 }

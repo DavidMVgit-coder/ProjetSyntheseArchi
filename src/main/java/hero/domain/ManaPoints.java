@@ -3,7 +3,7 @@ package hero.domain;
 public final class ManaPoints {
 
     private final int maximum;
-    private int current;
+    private final int current;
 
     public ManaPoints(int maximum) {
         if (maximum < 0) {
@@ -14,28 +14,33 @@ public final class ManaPoints {
         this.current = maximum;
     }
 
+    private ManaPoints(int maximum, int current) {
+        this.maximum = maximum;
+        this.current = current;
+    }
+
     public boolean canCast(int cost) {
         return cost <= current;
     }
 
-    public void consume(int cost) {
+    public ManaPoints consume(int cost) {
         if (!canCast(cost)) {
             throw new IllegalStateException("Magie insuffisante pour lancer ce sort.");
         }
 
-        current -= cost;
+        return new ManaPoints(maximum, current - cost);
     }
 
-    public void regenerate(int amount) {
+    public ManaPoints regenerate(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("La magie regagnée ne peut pas être négative.");
         }
 
-        current = Math.min(maximum, current + amount);
+        return new ManaPoints(maximum, Math.min(maximum, current + amount));
     }
 
-    public void restoreFully() {
-        current = maximum;
+    public ManaPoints restoreFully() {
+        return new ManaPoints(maximum, maximum);
     }
 
     public int getCurrent() {
@@ -44,6 +49,16 @@ public final class ManaPoints {
 
     public int getMaximum() {
         return maximum;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof ManaPoints that && maximum == that.maximum && current == that.current;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * maximum + current;
     }
 
     @Override

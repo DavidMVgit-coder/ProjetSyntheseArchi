@@ -1,10 +1,7 @@
-cd ..package item.domain;
+package item.domain;
 
 import item.domain.inventory.InventoryItem;
 
-/**
- * Item
- */
 public class Item implements InventoryItem {
     private final String name;
 
@@ -25,7 +22,4 @@ public class Item implements InventoryItem {
     public String toString() {
         return "Item [nom=" + name + "]";
     }
-
-    
-
 }

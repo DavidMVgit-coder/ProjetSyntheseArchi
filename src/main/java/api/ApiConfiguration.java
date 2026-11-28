@@ -1,13 +1,12 @@
 package api;
 
-import application.CreateHero.CreateHeroUseCase;
-import application.GetHero.GetHeroUseCase;
-import application.port.HeroRepository;
 import api.error.ApiExceptionHandler;
-import api.hero.HeroResource;
-import api.lobby.LobbyResource;
-import api.player.PlayerResource;
-import infrastructure.InMemoryHeroRepository;
+import hero.api.HeroResource;
+import hero.application.createHero.CreateHeroUseCase;
+import hero.application.getHero.GetHeroUseCase;
+import hero.application.port.HeroRepository;
+import hero.infrastructure.InMemoryHeroRepository;
+import lobby.api.LobbyResource;
 import lobby.application.createLobby.CreateLobbyUseCase;
 import lobby.application.leaveLobby.LeaveLobbyUseCase;
 import lobby.application.port.LobbyRepository;
@@ -16,6 +15,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import player.api.PlayerResource;
 import player.application.createPlayer.CreatePlayerUseCase;
 import player.application.port.PasswordHasher;
 import player.application.port.PlayerRepository;
